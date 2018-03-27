@@ -11,20 +11,28 @@ DenotativeObject subclass: #I
 I class
 	instanceVariableNames: 'next'!
 
-!I class methodsFor: 'axiomas' stamp: 'Nacho 3/24/2018 14:41:46'!
+!I class methodsFor: 'Metodos' stamp: 'Nacho 3/24/2018 14:41:46'!
 * unNumero
 	^unNumero.! !
 
-!I class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:29:45'!
+!I class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:29:45'!
 + unNumero
 
 ^unNumero next.! !
 
-!I class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:00:22'!
+!I class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 18:48:48'!
+- unNumero
+	self error: 'Numeros negativos no soportados'.! !
+
+!I class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 18:51:14'!
+descripcionDeErrorDeNumerosNegativosNoSoportados
+ ^'Numeros negativos no soportados'.! !
+
+!I class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:00:22'!
 next
 	^II! !
 
-!I class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:07:23'!
+!I class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:07:23'!
 previous
 	self error:  'No existe el anterior a I'.! !
 
@@ -43,7 +51,7 @@ DenotativeObject subclass: #II
 II class
 	instanceVariableNames: 'next previous'!
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:19'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/26/2018 19:26:19'!
 * unNumero 
 	(unNumero = I)
 	ifTrue: [ ^self]
@@ -51,18 +59,18 @@ II class
 		^self + (self + unNumero previous)
 		].! !
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:11:08'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:11:08'!
 + unNumeroDePeano
 
 	^self previous + unNumeroDePeano next! !
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/24/2018 14:38:41'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/24/2018 14:38:41'!
 - unNumero
 	(unNumero = I)
 	ifTrue:[^self previous]
 	ifFalse:[^self previous - unNumero previous].! !
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/24/2018 14:41:35'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/24/2018 14:41:35'!
 / unDenominador
 |var|
 	var:= self.
@@ -77,7 +85,7 @@ II class
 		^var.	
 	].! !
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:18:18'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:18:18'!
 next
 	next ifNil:
 	[
@@ -87,20 +95,31 @@ next
 	^next
 	! !
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:22:36'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:22:36'!
 previous
 	^previous! !
 
-!II class methodsFor: 'axiomas' stamp: 'Nacho 3/22/2018 21:25:56'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:25:56'!
 previous: aNumber
 
 	previous:= aNumber! !
 
-II instVarNamed: 'next' put: III!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 18:19:12'!
+removeAllNext
+
+next ifNotNil:
+[
+	next removeAllNext.
+	next removeFromSystem.
+	next := nil.
+].
+! !
+
+II instVarNamed: 'next' put: nil!
 II instVarNamed: 'previous' put: I!
 
-!classDefinition: #III category: #'Workspace-Objects'!
-DenotativeObject subclass: #III
+!classDefinition: #PeanoTest category: #'Workspace-Objects'!
+DenotativeObject subclass: #PeanoTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -108,200 +127,74 @@ DenotativeObject subclass: #III
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'III class' category: #'Workspace-Objects'!
-III class
-	instanceVariableNames: 'next previous'!
+!classDefinition: 'PeanoTest class' category: #'Workspace-Objects'!
+PeanoTest class
+	instanceVariableNames: ''!
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-* unNumero 
-	(unNumero = I)
-	ifTrue: [ ^self]
-	ifFalse: [		
-		^self + (self + unNumero previous)
-		].! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 12:51:26'!
+test01UnoMasUnSumandoEsElProximoDelSumando
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-+ unNumeroDePeano
+	Assert that: I + II isEqualTo: II next.! !
 
-	^self previous + unNumeroDePeano next! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:11:40'!
+test02NumerosMayoresaUnoSumanBien
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-- unNumero
-	(unNumero = I)
-	ifTrue:[^self previous]
-	ifFalse:[^self previous - unNumero previous].! !
+	Assert that: II + II isEqualTo: IIII.
+! !
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-/ unDenominador
-|var|
-	var:= self.
-	(unDenominador = I)
-	ifTrue:[^self]
-	ifFalse:
-	[
-		[var > unDenominador] whileTrue:
-			[
-				var := var - unDenominador
-			].
-		^var.	
-	].! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:12:19'!
+test03UnNumeroMenosUnoEsElPrevioDelNumero
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-next
-	next ifNil:
-	[
-		next := self cloneNamed:(self name, 'I').	
-		next previous: self.
-	].
-	^next
-	! !
+	Assert that: II - I isEqualTo: II previous.! !
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-previous
-	^previous! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:15:11'!
+test04NumerosMayoresaUnoRestanBien
 
-!III class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-previous: aNumber
+	Assert that: IIII - II isEqualTo: II.
+! !
 
-	previous:= aNumber! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 12:51:02'!
+test05RestaNoSoportaNumerosNegativos
 
-III instVarNamed: 'next' put: IIII!
-III instVarNamed: 'previous' put: II!
-
-!classDefinition: #IIII category: #'Workspace-Objects'!
-DenotativeObject subclass: #IIII
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Workspace-Objects'!
+	Assert should: [ I - II ] signal: Error withDescription: I descripcionDeErrorDeNumerosNegativosNoSoportados.
+! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:15:53'!
+test06UnNumeroMultiplicadoPorUnoEsIgualAlNumero
 
-!classDefinition: 'IIII class' category: #'Workspace-Objects'!
-IIII class
-	instanceVariableNames: 'next previous'!
+	Assert that: II * I isEqualTo: II.! !
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-* unNumero 
-	(unNumero = I)
-	ifTrue: [ ^self]
-	ifFalse: [		
-		^self + (self + unNumero previous)
-		].! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:16:23'!
+test07NumerosMayoresaUnoMultiplicanBien
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-+ unNumeroDePeano
+	Assert that: II * II isEqualTo: IIII.
+! !
 
-	^self previous + unNumeroDePeano next! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:16:46'!
+test08UnoMultiplicadoUnoEsIgualAUno
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-- unNumero
-	(unNumero = I)
-	ifTrue:[^self previous]
-	ifFalse:[^self previous - unNumero previous].! !
+	Assert that: I * I isEqualTo: I.! !
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-/ unDenominador
-|var|
-	var:= self.
-	(unDenominador = I)
-	ifTrue:[^self]
-	ifFalse:
-	[
-		[var > unDenominador] whileTrue:
-			[
-				var := var - unDenominador
-			].
-		^var.	
-	].! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:01:58'!
+test09NumerosMayoresaUnoDividenBien
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-next
-	next ifNil:
-	[
-		next := self cloneNamed:(self name, 'I').	
-		next previous: self.
-	].
-	^next
-	! !
+	Assert that: IIII / II isEqualTo: II.
+! !
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-previous
-	^previous! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:17:28'!
+test10UnNumeroDivididoUnoEsIgualAlNumero
 
-!IIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-previous: aNumber
+	Assert that: II / I isEqualTo: II.! !
 
-	previous:= aNumber! !
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:17:38'!
+test11UnoDivididoUnoEsIgualAUno
 
-IIII instVarNamed: 'next' put: IIIII!
-IIII instVarNamed: 'previous' put: III!
-
-!classDefinition: #IIIII category: #'Workspace-Objects'!
-DenotativeObject subclass: #IIIII
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Workspace-Objects'!
+	Assert that: I / I isEqualTo: I.! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:17:59'!
+test12DivisionNoSoportaDividirPorUnNumeroMayor
 
-!classDefinition: 'IIIII class' category: #'Workspace-Objects'!
-IIIII class
-	instanceVariableNames: 'next previous'!
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-* unNumero 
-	(unNumero = I)
-	ifTrue: [ ^self]
-	ifFalse: [		
-		^self + (self + unNumero previous)
-		].! !
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-+ unNumeroDePeano
-
-	^self previous + unNumeroDePeano next! !
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-- unNumero
-	(unNumero = I)
-	ifTrue:[^self previous]
-	ifFalse:[^self previous - unNumero previous].! !
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-/ unDenominador
-|var|
-	var:= self.
-	(unDenominador = I)
-	ifTrue:[^self]
-	ifFalse:
-	[
-		[var > unDenominador] whileTrue:
-			[
-				var := var - unDenominador
-			].
-		^var.	
-	].! !
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-next
-	next ifNil:
-	[
-		next := self cloneNamed:(self name, 'I').	
-		next previous: self.
-	].
-	^next
-	! !
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-previous
-	^previous! !
-
-!IIIII class methodsFor: 'axiomas' stamp: 'Nacho 3/26/2018 19:26:47'!
-previous: aNumber
-
-	previous:= aNumber! !
-
-IIIII instVarNamed: 'next' put: nil!
-IIIII instVarNamed: 'previous' put: IIII!
+	Assert should: [ III /  IIII ] signal: Error withDescription: II descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor.
+	
+	Assert should: [ I /  II] signal: Error withDescription: I descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+! !
