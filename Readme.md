@@ -1,8 +1,7 @@
-## Ingenieria de Software I: Trabajos Practicos
+## Ingeniería de Software I: Trabajos Prácticos
 
 Integrantes del grupo:
 
-* Andres Langberg - andreslangberg@gmail.com
+* Andrés Langberg - andreslangberg@gmail.com
 * Ignacio Fernandez - nachofernandez.1995@hotmail.com
-
 
