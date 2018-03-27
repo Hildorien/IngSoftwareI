@@ -51,13 +51,9 @@ DenotativeObject subclass: #II
 II class
 	instanceVariableNames: 'next previous'!
 
-!II class methodsFor: 'Metodos' stamp: 'Nacho 3/26/2018 19:26:19'!
+!II class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 19:52:06'!
 * unNumero 
-	(unNumero = I)
-	ifTrue: [ ^self]
-	ifFalse: [		
-		^self + (self + unNumero previous)
-		].! !
+ ^ (self previous*unNumero) + unNumero! !
 
 !II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:11:08'!
 + unNumeroDePeano
