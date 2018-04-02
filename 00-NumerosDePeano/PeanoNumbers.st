@@ -48,15 +48,15 @@ descripcionDeErrorDeNumerosNegativosNoSoportados
 
 	^ (unNumero = I) not.! !
 
-!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:51'!
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:10:24'!
 <= unNumero
 	
-	^ unNumero = self.! !
+	^ true.! !
 
-!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:54:39'!
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:14:54'!
 igualOmasGrandeQue: unNumero
 	
-	^ false.! !
+	^ unNumero = self.! !
 
 !I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:19:25'!
 leRestoAl: unNumero
@@ -69,7 +69,7 @@ masGrandeQue: unNumero
 	^ false.! !
 
 
-!I class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+!I class methodsFor: 'fileout' stamp: 'AL 4/2/2018 16:15:57'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading pourposes - Do not modify it"
 
@@ -179,7 +179,7 @@ next ifNotNil:
 
 
 
-!II class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+!II class methodsFor: 'fileout' stamp: 'AL 4/2/2018 16:15:57'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading pourposes - Do not modify it"
 
@@ -200,23 +200,23 @@ DenotativeObject subclass: #III
 III class
 	instanceVariableNames: 'next previous'!
 
-!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:58'!
 * unNumero 
  
 	^ (self previous*unNumero) + unNumero! !
 
-!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:58'!
 + unNumeroDePeano
 
 	^ self previous + unNumeroDePeano next! !
 
-!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:58'!
 - unNumero
 	
 	^ unNumero leRestoAl: self. 
 	! !
 
-!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:58'!
 next
 	next ifNil:
 	[
@@ -226,13 +226,13 @@ next
 	^next
 	! !
 
-!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:58'!
 previous
 	
 	^previous! !
 
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 / unDenominador
 |var|
 	var:= self.
@@ -247,37 +247,37 @@ previous
 		^var.	
 	].! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 < unNumero
 
 	^ unNumero masGrandeQue: self.! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 <= unNumero
 
-	^ unNumero igualOMasGrandeQue: self.! !
+	^ unNumero igualOmasGrandeQue: self.! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 igualOmasGrandeQue: unNumero
 	
 	^ unNumero previous <= self previous.! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 leRestoAl: unNumero
 
 	^ unNumero previous - self previous! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 masGrandeQue: unNumero
 	
 	^ unNumero previous < self previous.! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 previous: aNumber
 
 	previous:= aNumber! !
 
-!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:58'!
 removeAllNext
 
 next ifNotNil:
@@ -289,7 +289,7 @@ next ifNotNil:
 ! !
 
 
-!III class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+!III class methodsFor: 'fileout' stamp: 'AL 4/2/2018 16:15:57'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading pourposes - Do not modify it"
 
@@ -310,23 +310,23 @@ DenotativeObject subclass: #IIII
 IIII class
 	instanceVariableNames: 'next previous'!
 
-!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:59'!
 * unNumero 
  
 	^ (self previous*unNumero) + unNumero! !
 
-!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:59'!
 + unNumeroDePeano
 
 	^ self previous + unNumeroDePeano next! !
 
-!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:59'!
 - unNumero
 	
 	^ unNumero leRestoAl: self. 
 	! !
 
-!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:59'!
 next
 	next ifNil:
 	[
@@ -336,13 +336,13 @@ next
 	^next
 	! !
 
-!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 16:12:59'!
 previous
 	
 	^previous! !
 
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 / unDenominador
 |var|
 	var:= self.
@@ -357,37 +357,37 @@ previous
 		^var.	
 	].! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 < unNumero
 
 	^ unNumero masGrandeQue: self.! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 <= unNumero
 
-	^ unNumero igualOMasGrandeQue: self.! !
+	^ unNumero igualOmasGrandeQue: self.! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 igualOmasGrandeQue: unNumero
 	
 	^ unNumero previous <= self previous.! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 leRestoAl: unNumero
 
 	^ unNumero previous - self previous! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:13'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 masGrandeQue: unNumero
 	
 	^ unNumero previous < self previous.! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:13'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 previous: aNumber
 
 	previous:= aNumber! !
 
-!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:13'!
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 16:12:59'!
 removeAllNext
 
 next ifNotNil:
@@ -399,7 +399,7 @@ next ifNotNil:
 ! !
 
 
-!IIII class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+!IIII class methodsFor: 'fileout' stamp: 'AL 4/2/2018 16:15:57'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading pourposes - Do not modify it"
 
