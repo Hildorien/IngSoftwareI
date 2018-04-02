@@ -11,32 +11,70 @@ DenotativeObject subclass: #I
 I class
 	instanceVariableNames: 'next'!
 
-!I class methodsFor: 'Metodos' stamp: 'Nacho 3/24/2018 14:41:46'!
+!I class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:00:14'!
 * unNumero
+	
 	^unNumero.! !
 
-!I class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:29:45'!
+!I class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:00:18'!
 + unNumero
 
-^unNumero next.! !
+	^unNumero next.! !
 
-!I class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 18:48:48'!
+!I class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:00:31'!
 - unNumero
-	self error: 'Numeros negativos no soportados'.! !
+	
+	self error: self descripcionDeErrorDeNumerosNegativosNoSoportados.! !
 
-!I class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 18:51:14'!
-descripcionDeErrorDeNumerosNegativosNoSoportados
- ^'Numeros negativos no soportados'.! !
-
-!I class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:00:22'!
+!I class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:00:40'!
 next
+	
 	^II! !
 
-!I class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:07:23'!
+!I class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:00:46'!
 previous
+	
 	self error:  'No existe el anterior a I'.! !
 
-I instVarNamed: 'next' put: nil!
+
+!I class methodsFor: 'ErrorCodes' stamp: 'AL 4/2/2018 15:14:17'!
+descripcionDeErrorDeNumerosNegativosNoSoportados
+ 
+	^'Numeros negativos no soportados'.! !
+
+
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:48:37'!
+< unNumero
+
+	^ (unNumero = I) not.! !
+
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:51'!
+<= unNumero
+	
+	^ unNumero = self.! !
+
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:54:39'!
+igualOmasGrandeQue: unNumero
+	
+	^ false.! !
+
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:19:25'!
+leRestoAl: unNumero
+
+	^ unNumero previous.! !
+
+!I class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:41:20'!
+masGrandeQue: unNumero
+	
+	^ false.! !
+
+
+!I class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading pourposes - Do not modify it"
+
+	next := nil.! !
+
 
 !classDefinition: #II category: #'Workspace-Objects'!
 DenotativeObject subclass: #II
@@ -51,20 +89,37 @@ DenotativeObject subclass: #II
 II class
 	instanceVariableNames: 'next previous'!
 
-!II class methodsFor: 'Metodos' stamp: 'Nacho 3/27/2018 19:52:06'!
+!II class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:01:04'!
 * unNumero 
- ^ (self previous*unNumero) + unNumero! !
+ 
+	^ (self previous*unNumero) + unNumero! !
 
-!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:11:08'!
+!II class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:14:35'!
 + unNumeroDePeano
 
-	^self previous + unNumeroDePeano next! !
+	^ self previous + unNumeroDePeano next! !
 
-!II class methodsFor: 'Metodos' stamp: 'Nacho 3/24/2018 14:38:41'!
+!II class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:18:15'!
 - unNumero
-	(unNumero = I)
-	ifTrue:[^self previous]
-	ifFalse:[^self previous - unNumero previous].! !
+	
+	^ unNumero leRestoAl: self. 
+	! !
+
+!II class methodsFor: 'Axiomas' stamp: 'Nacho 3/22/2018 21:18:18'!
+next
+	next ifNil:
+	[
+		next := self cloneNamed:(self name, 'I').	
+		next previous: self.
+	].
+	^next
+	! !
+
+!II class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:02:18'!
+previous
+	
+	^previous! !
+
 
 !II class methodsFor: 'Metodos' stamp: 'Nacho 3/24/2018 14:41:35'!
 / unDenominador
@@ -81,19 +136,30 @@ II class
 		^var.	
 	].! !
 
-!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:18:18'!
-next
-	next ifNil:
-	[
-		next := self cloneNamed:(self name, 'I').	
-		next previous: self.
-	].
-	^next
-	! !
+!II class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:42:59'!
+< unNumero
 
-!II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:22:36'!
-previous
-	^previous! !
+	^ unNumero masGrandeQue: self.! !
+
+!II class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:56:03'!
+<= unNumero
+
+	^ unNumero igualOmasGrandeQue: self.! !
+
+!II class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:52:45'!
+igualOmasGrandeQue: unNumero
+	
+	^ unNumero previous <= self previous.! !
+
+!II class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:21:09'!
+leRestoAl: unNumero
+
+	^ unNumero previous - self previous! !
+
+!II class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:52:21'!
+masGrandeQue: unNumero
+	
+	^ unNumero previous < self previous.! !
 
 !II class methodsFor: 'Metodos' stamp: 'Nacho 3/22/2018 21:25:56'!
 previous: aNumber
@@ -111,11 +177,18 @@ next ifNotNil:
 ].
 ! !
 
-II instVarNamed: 'next' put: nil!
-II instVarNamed: 'previous' put: I!
+
+
+!II class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading pourposes - Do not modify it"
+
+	next := III.
+	previous := I.! !
+
 
-!classDefinition: #PeanoTest category: #'Workspace-Objects'!
-DenotativeObject subclass: #PeanoTest
+!classDefinition: #III category: #'Workspace-Objects'!
+DenotativeObject subclass: #III
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -123,74 +196,217 @@ DenotativeObject subclass: #PeanoTest
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'PeanoTest class' category: #'Workspace-Objects'!
-PeanoTest class
-	instanceVariableNames: ''!
+!classDefinition: 'III class' category: #'Workspace-Objects'!
+III class
+	instanceVariableNames: 'next previous'!
 
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 12:51:26'!
-test01UnoMasUnSumandoEsElProximoDelSumando
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+* unNumero 
+ 
+	^ (self previous*unNumero) + unNumero! !
 
-	Assert that: I + II isEqualTo: II next.! !
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
++ unNumeroDePeano
 
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:11:40'!
-test02NumerosMayoresaUnoSumanBien
+	^ self previous + unNumeroDePeano next! !
 
-	Assert that: II + II isEqualTo: IIII.
-! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:12:19'!
-test03UnNumeroMenosUnoEsElPrevioDelNumero
-
-	Assert that: II - I isEqualTo: II previous.! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:15:11'!
-test04NumerosMayoresaUnoRestanBien
-
-	Assert that: IIII - II isEqualTo: II.
-! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 12:51:02'!
-test05RestaNoSoportaNumerosNegativos
-
-	Assert should: [ I - II ] signal: Error withDescription: I descripcionDeErrorDeNumerosNegativosNoSoportados.
-! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:15:53'!
-test06UnNumeroMultiplicadoPorUnoEsIgualAlNumero
-
-	Assert that: II * I isEqualTo: II.! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:16:23'!
-test07NumerosMayoresaUnoMultiplicanBien
-
-	Assert that: II * II isEqualTo: IIII.
-! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:16:46'!
-test08UnoMultiplicadoUnoEsIgualAUno
-
-	Assert that: I * I isEqualTo: I.! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:01:58'!
-test09NumerosMayoresaUnoDividenBien
-
-	Assert that: IIII / II isEqualTo: II.
-! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:17:28'!
-test10UnNumeroDivididoUnoEsIgualAlNumero
-
-	Assert that: II / I isEqualTo: II.! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:17:38'!
-test11UnoDivididoUnoEsIgualAUno
-
-	Assert that: I / I isEqualTo: I.! !
-
-!PeanoTest class methodsFor: 'as yet unclassified' stamp: 'ARM 3/26/2018 13:17:59'!
-test12DivisionNoSoportaDividirPorUnNumeroMayor
-
-	Assert should: [ III /  IIII ] signal: Error withDescription: II descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor.
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+- unNumero
 	
-	Assert should: [ I /  II] signal: Error withDescription: I descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^ unNumero leRestoAl: self. 
+	! !
+
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+next
+	next ifNil:
+	[
+		next := self cloneNamed:(self name, 'I').	
+		next previous: self.
+	].
+	^next
+	! !
+
+!III class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+previous
+	
+	^previous! !
+
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+/ unDenominador
+|var|
+	var:= self.
+	(unDenominador = I)
+	ifTrue:[^self]
+	ifFalse:
+	[
+		[var > unDenominador] whileTrue:
+			[
+				var := var - unDenominador
+			].
+		^var.	
+	].! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+< unNumero
+
+	^ unNumero masGrandeQue: self.! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+<= unNumero
+
+	^ unNumero igualOMasGrandeQue: self.! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+igualOmasGrandeQue: unNumero
+	
+	^ unNumero previous <= self previous.! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+leRestoAl: unNumero
+
+	^ unNumero previous - self previous! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+masGrandeQue: unNumero
+	
+	^ unNumero previous < self previous.! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+previous: aNumber
+
+	previous:= aNumber! !
+
+!III class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+removeAllNext
+
+next ifNotNil:
+[
+	next removeAllNext.
+	next removeFromSystem.
+	next := nil.
+].
 ! !
+
+
+!III class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading pourposes - Do not modify it"
+
+	next := IIII.
+	previous := II.! !
+
+
+!classDefinition: #IIII category: #'Workspace-Objects'!
+DenotativeObject subclass: #IIII
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Workspace-Objects'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'IIII class' category: #'Workspace-Objects'!
+IIII class
+	instanceVariableNames: 'next previous'!
+
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+* unNumero 
+ 
+	^ (self previous*unNumero) + unNumero! !
+
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
++ unNumeroDePeano
+
+	^ self previous + unNumeroDePeano next! !
+
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+- unNumero
+	
+	^ unNumero leRestoAl: self. 
+	! !
+
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+next
+	next ifNil:
+	[
+		next := self cloneNamed:(self name, 'I').	
+		next previous: self.
+	].
+	^next
+	! !
+
+!IIII class methodsFor: 'Axiomas' stamp: 'AL 4/2/2018 15:53:12'!
+previous
+	
+	^previous! !
+
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+/ unDenominador
+|var|
+	var:= self.
+	(unDenominador = I)
+	ifTrue:[^self]
+	ifFalse:
+	[
+		[var > unDenominador] whileTrue:
+			[
+				var := var - unDenominador
+			].
+		^var.	
+	].! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+< unNumero
+
+	^ unNumero masGrandeQue: self.! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+<= unNumero
+
+	^ unNumero igualOMasGrandeQue: self.! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+igualOmasGrandeQue: unNumero
+	
+	^ unNumero previous <= self previous.! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:12'!
+leRestoAl: unNumero
+
+	^ unNumero previous - self previous! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:13'!
+masGrandeQue: unNumero
+	
+	^ unNumero previous < self previous.! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:13'!
+previous: aNumber
+
+	previous:= aNumber! !
+
+!IIII class methodsFor: 'Metodos' stamp: 'AL 4/2/2018 15:53:13'!
+removeAllNext
+
+next ifNotNil:
+[
+	next removeAllNext.
+	next removeFromSystem.
+	next := nil.
+].
+! !
+
+
+!IIII class methodsFor: 'fileout' stamp: 'AL 4/2/2018 15:57:31'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading pourposes - Do not modify it"
+
+	next := nil.
+	previous := III.! !
+
+I initializeCollaboratorsFromFile!
+II initializeCollaboratorsFromFile!
+III initializeCollaboratorsFromFile!
+IIII initializeCollaboratorsFromFile!
