@@ -13,36 +13,43 @@ TestCase subclass: #IdiomTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!IdiomTest methodsFor: 'testing' stamp: 'HAW 4/14/2017 16:56:37'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:57:28'!
+measureActionTime: anAction
+	"comment stating purpose of message"
+
+	| millisecondsBeforeRunning millisecondsAfterRunning |
+	
+	millisecondsBeforeRunning := Time millisecondClockValue.
+	anAction value.
+	millisecondsAfterRunning := Time millisecondClockValue.
+	
+	^millisecondsAfterRunning-millisecondsBeforeRunning! !
+
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:57:43'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning |
+	| customerBook timeActionMeasured |
 	
 	customerBook := CustomerBook  new.
 	
-	millisecondsBeforeRunning := Time millisecondClockValue.
-	customerBook addCustomerNamed: 'John Lennon'.
-	millisecondsAfterRunning := Time millisecondClockValue.
-	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < 50 
+	timeActionMeasured := self measureActionTime: [customerBook addCustomerNamed: 'John Lennon'].
+
+	self assert: (timeActionMeasured) < 50 
 	
 ! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'HernanWilkinson 4/11/2016 20:29'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:58:00'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning paulMcCartney |
+	| customerBook timeActionMeasured paulMcCartney |
 	
 	customerBook := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	
 	customerBook addCustomerNamed: paulMcCartney.
-	  
-	millisecondsBeforeRunning := Time millisecondClockValue.
-	customerBook removeCustomerNamed: paulMcCartney.
-	millisecondsAfterRunning := Time millisecondClockValue.
-	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < 100 
+	timeActionMeasured := self measureActionTime: [customerBook removeCustomerNamed: 'Paul McCartney'].
+		  	
+	self assert: timeActionMeasured < 100 
 	
 ! !
 
