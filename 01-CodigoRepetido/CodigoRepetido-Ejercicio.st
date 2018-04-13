@@ -13,6 +13,28 @@ TestCase subclass: #IdiomTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:40:06'!
+dadaUnaAccion: unaAccion retornarTalError: unError yRealizaLasVerificaciones: lasVerificaciones
+	"comment stating purpose of message"
+
+	| |
+	unaAccion value
+	on: unError
+	do: lasVerificaciones.
+	
+	
+	! !
+
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:29:29'!
+givenAction: anAction doesNotTakeMoreThan: anAmountOfTime
+"comment stating purpose of message"
+
+	| actionTime |
+	actionTime := self measureActionTime: anAction.
+	
+	^actionTime<anAmountOfTime.
+	! !
+
 !IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:57:28'!
 measureActionTime: anAction
 	"comment stating purpose of message"
@@ -25,41 +47,42 @@ measureActionTime: anAction
 	
 	^millisecondsAfterRunning-millisecondsBeforeRunning! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:57:43'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:51:06'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook timeActionMeasured |
+	| customerBook result |
 	
 	customerBook := CustomerBook  new.
 	
-	timeActionMeasured := self measureActionTime: [customerBook addCustomerNamed: 'John Lennon'].
+	result := self givenAction: [customerBook addCustomerNamed: 'John Lennon'] doesNotTakeMoreThan: 50 * millisecond.
 
-	self assert: (timeActionMeasured) < 50 
+	self assert: result 
 	
 ! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:58:00'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:30:57'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook timeActionMeasured paulMcCartney |
+	| customerBook result paulMcCartney |
 	
 	customerBook := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
-	
 	customerBook addCustomerNamed: paulMcCartney.
-	timeActionMeasured := self measureActionTime: [customerBook removeCustomerNamed: 'Paul McCartney'].
-		  	
-	self assert: timeActionMeasured < 100 
 	
+	result := self givenAction: [customerBook removeCustomerNamed: 'Paul McCartney'] doesNotTakeMoreThan: 100 * millisecond.
+
+	self assert: result.	
 ! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'HernanWilkinson 5/9/2012 18:12'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:52:19'!
 test03CanNotAddACustomerWithEmptyName 
 
 	| customerBook |
 			
 	customerBook := CustomerBook new.
-
+	
+	"dadoUnaAccion: unaAccion retornaUnErrorDeTipo: unTipoDeError yEjecutaElClosure: unClosure"
+	
 	[ customerBook addCustomerNamed: ''.
 	self fail ]
 		on: Error 
@@ -67,7 +90,7 @@ test03CanNotAddACustomerWithEmptyName
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
 			self assert: customerBook isEmpty ]! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'HAW 8/28/2017 08:57:25'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:47:39'!
 test04CanNotRemoveAnInvalidCustomer
 	
 	| customerBook johnLennon |
@@ -75,6 +98,8 @@ test04CanNotRemoveAnInvalidCustomer
 	customerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
+	
+	"dadoUnaAccion: unaAccion retornaTalError: unError yRealizaLasVerificaciones: lasVerificaciones"
 	
 	[ customerBook removeCustomerNamed: 'Paul McCartney'.
 	self fail ]

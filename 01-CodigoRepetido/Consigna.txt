@@ -8,4 +8,3 @@ No se puede modificar las clases provistas, solo los tests y no se puede
 modificar lo que verifican los tests. O sea, solo se puede hacer un cambio de
 diseño de tal manera que siga testeando lo mismo, que la funcionalidad sea la
 misma, pero que no haya codigo repetido
-
