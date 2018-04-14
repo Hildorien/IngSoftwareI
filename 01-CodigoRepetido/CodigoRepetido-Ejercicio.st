@@ -13,84 +13,75 @@ TestCase subclass: #IdiomTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:40:06'!
-dadaUnaAccion: unaAccion retornarTalError: unError yRealizaLasVerificaciones: lasVerificaciones
-	"comment stating purpose of message"
+!IdiomTest methodsFor: 'auxiliars' stamp: 'AL 4/13/2018 23:13:55'!
+assertGivenClosure: aClosure executionDoesNotTakeMoreThan: anAmountOfTime
 
-	| |
-	unaAccion value
-	on: unError
-	do: lasVerificaciones.
+	| closureExecutionTime |
+	
+	closureExecutionTime := self measureClosureTime: aClosure.
+	
+	self assert: closureExecutionTime<anAmountOfTime.
+	! !
+
+!IdiomTest methodsFor: 'auxiliars' stamp: 'AL 4/13/2018 23:14:58'!
+assertGivenClosure: aClosure throwsException: anException andExecutesClosure: aVerificationsClosure
+
+	[ aClosure value self fail ]
+		on: anException
+		do: aVerificationsClosure.
 	
 	
 	! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:29:29'!
-givenAction: anAction doesNotTakeMoreThan: anAmountOfTime
-"comment stating purpose of message"
-
-	| actionTime |
-	actionTime := self measureActionTime: anAction.
+!IdiomTest methodsFor: 'auxiliars' stamp: 'AL 4/13/2018 23:13:41'!
+measureClosureTime: aClosure
 	
-	^actionTime<anAmountOfTime.
-	! !
-
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 20:57:28'!
-measureActionTime: anAction
-	"comment stating purpose of message"
-
 	| millisecondsBeforeRunning millisecondsAfterRunning |
 	
 	millisecondsBeforeRunning := Time millisecondClockValue.
-	anAction value.
+	aClosure value.
 	millisecondsAfterRunning := Time millisecondClockValue.
 	
 	^millisecondsAfterRunning-millisecondsBeforeRunning! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:51:06'!
+
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/13/2018 23:05:17'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook result |
+	| customerBook |
 	
 	customerBook := CustomerBook  new.
 	
-	result := self givenAction: [customerBook addCustomerNamed: 'John Lennon'] doesNotTakeMoreThan: 50 * millisecond.
-
-	self assert: result 
+	self assertGivenClosure: [customerBook addCustomerNamed: 'John Lennon'] executionDoesNotTakeMoreThan: 50 * millisecond.
 	
 ! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:30:57'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/13/2018 23:06:46'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook result paulMcCartney |
+	| customerBook paulMcCartney |
 	
 	customerBook := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	customerBook addCustomerNamed: paulMcCartney.
 	
-	result := self givenAction: [customerBook removeCustomerNamed: 'Paul McCartney'] doesNotTakeMoreThan: 100 * millisecond.
-
-	self assert: result.	
+	self assertGivenClosure: [customerBook removeCustomerNamed: 'Paul McCartney'] executionDoesNotTakeMoreThan: 100 * millisecond.
 ! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:52:19'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/13/2018 23:19:16'!
 test03CanNotAddACustomerWithEmptyName 
 
 	| customerBook |
 			
 	customerBook := CustomerBook new.
-	
-	"dadoUnaAccion: unaAccion retornaUnErrorDeTipo: unTipoDeError yEjecutaElClosure: unClosure"
-	
-	[ customerBook addCustomerNamed: ''.
-	self fail ]
-		on: Error 
-		do: [ :anError | 
+		
+	self assertGivenClosure: [ customerBook addCustomerNamed: ''.	self fail ] 
+		  throwsException: Error 
+		  andExecutesClosure: [ :anError | 
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
 			self assert: customerBook isEmpty ]! !
 
-!IdiomTest methodsFor: 'testing' stamp: 'AL 4/12/2018 21:47:39'!
+!IdiomTest methodsFor: 'testing' stamp: 'AL 4/13/2018 23:20:18'!
 test04CanNotRemoveAnInvalidCustomer
 	
 	| customerBook johnLennon |
@@ -99,15 +90,11 @@ test04CanNotRemoveAnInvalidCustomer
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
 	
-	"dadoUnaAccion: unaAccion retornaTalError: unError yRealizaLasVerificaciones: lasVerificaciones"
-	
-	[ customerBook removeCustomerNamed: 'Paul McCartney'.
-	self fail ]
-		on: NotFound 
-		do: [ :anError | 
+	self assertGivenClosure: [ customerBook removeCustomerNamed: 'Paul McCartney'. self fail ]
+		  throwsException: NotFound 
+		  andExecutesClosure: [ :anError | 
 			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
-! !
+			self assert: (customerBook includesCustomerNamed: johnLennon) ]! !
 
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
