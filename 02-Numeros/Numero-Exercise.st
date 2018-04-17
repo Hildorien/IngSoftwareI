@@ -292,13 +292,17 @@ initalizeWith: aValue
 	^self error:'La multiplicacion no es entre un entero y una fraccion'.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:18:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:00:08'!
 + anAdder 
+
+	^anAdder sumarEntero:self.
 	
-	(anAdder isKindOf: Fraccion) ifTrue:[ ^(anAdder denominator + anAdder numerator ) / anAdder denominator].
+	
+	
+	"(anAdder isKindOf: Fraccion) ifTrue:[ ^(anAdder denominator + anAdder numerator ) / anAdder denominator].
 	(self isKindOf: self class) ifTrue:[^self class with: value + anAdder integerValue].
 	
-	^self error: 'La suma no es entre entero y fraccion'.
+	^self error: 'La suma no es entre entero y fraccion'."
 	
 	
 	! !
@@ -322,6 +326,17 @@ initalizeWith: aValue
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:36:10'!
+sumarEntero: anEntero
+
+	^self class with: value + anEntero integerValue.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:37:04'!
+sumarFraccion: aFraccion
+
+		^(aFraccion denominator + aFraccion numerator ) / aFraccion denominator.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -387,10 +402,14 @@ hash
 	^self error:'La multiplicacion no es entre una fraccion y un entero'.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:15:06'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:00:18'!
 + anAdder 
+
+	^ anAdder sumarFraccion:self.
 	
-	| newNumerator newDenominator |
+	
+	
+	"| newNumerator newDenominator |
 	
 	
 	(anAdder isKindOf:Entero) ifTrue:[^(self numerator + self denominator )/self denominator ].
@@ -399,7 +418,7 @@ hash
 											newDenominator := denominator * anAdder denominator.
 											^newNumerator / newDenominator ].
 										
-	^self error: 'La suma no es entre fraccion y entero'.
+	^self error: 'La suma no es entre fraccion y entero'."
 ! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:35:42'!
@@ -409,6 +428,18 @@ hash
 	(self isKindOf:self class) ifTrue:[^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
 	
 	^self error:'La division no es entre una fraccion y un entero'.! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:43:29'!
+sumarEntero: anEntero
+ ^(self numerator + self denominator )/self denominator.! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:40:42'!
+sumarFraccion: aFraction
+ 
+	|newNumerator newDenominator|
+	newNumerator := (numerator * aFraction denominator) + (denominator * aFraction numerator).
+	newDenominator := denominator * aFraction denominator.
+	^newNumerator / newDenominator. ! !
 
 
 !Fraccion methodsFor: 'accessing' stamp: 'HernanWilkinson 5/7/2016 21:56'!
