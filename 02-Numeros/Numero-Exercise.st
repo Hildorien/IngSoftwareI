@@ -223,7 +223,6 @@ isZero
 
 	self subclassResponsibility ! !
 
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Numero class' category: #'Numero-Exercise'!
@@ -283,22 +282,36 @@ initalizeWith: aValue
 	value := aValue! !
 
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:21:54'!
 * aMultiplier 
 	
-	^self class with: value * aMultiplier integerValue
+	
+	(aMultiplier isKindOf:Fraccion) ifTrue:[^(self * aMultiplier numerator)/ aMultiplier denominator ].
+	(self isKindOf:self class) ifTrue:[^self class with: value * aMultiplier integerValue].
+	
+	^self error:'La multiplicacion no es entre un entero y una fraccion'.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:18:14'!
 + anAdder 
 	
-	^self class with: value + anAdder integerValue
-! !
+	(anAdder isKindOf: Fraccion) ifTrue:[ ^(anAdder denominator + anAdder numerator ) / anAdder denominator].
+	(self isKindOf: self class) ifTrue:[^self class with: value + anAdder integerValue].
+	
+	^self error: 'La suma no es entre entero y fraccion'.
+	
+	
+	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:39:10'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	
+	
+	(aDivisor isKindOf:Fraccion) ifTrue:[^(self * aDivisor denominator )/ aDivisor numerator ].
+	(self isKindOf: self class) ifTrue:[^Fraccion with: self over: aDivisor].
+	
+	^self error:'La division no es entre un entero y una fraccion'.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
 // aDivisor 
@@ -309,7 +322,6 @@ initalizeWith: aValue
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
-
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -366,27 +378,37 @@ hash
 	^(numerator hash / denominator hash) hash! !
 
 
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:30:30'!
 * aMultiplier 
 	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	(aMultiplier isKindOf: Entero) ifTrue:[^(self numerator * aMultiplier) / self denominator ].
+	(self isKindOf: self class) ifTrue:[^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)].
+	
+	^self error:'La multiplicacion no es entre una fraccion y un entero'.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:15:06'!
 + anAdder 
 	
 	| newNumerator newDenominator |
 	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
 	
-	^newNumerator / newDenominator ! !
+	(anAdder isKindOf:Entero) ifTrue:[^(self numerator + self denominator )/self denominator ].
+	
+	(self isKindOf: self class) ifTrue:[	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
+											newDenominator := denominator * anAdder denominator.
+											^newNumerator / newDenominator ].
+										
+	^self error: 'La suma no es entre fraccion y entero'.
+! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:35:42'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	(aDivisor isKindOf:Entero) ifTrue:[^self numerator / (self denominator * aDivisor)].
+	(self isKindOf:self class) ifTrue:[^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
+	
+	^self error:'La division no es entre una fraccion y un entero'.! !
 
 
 !Fraccion methodsFor: 'accessing' stamp: 'HernanWilkinson 5/7/2016 21:56'!
