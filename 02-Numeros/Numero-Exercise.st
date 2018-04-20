@@ -212,6 +212,10 @@ dividirUnEntero: unEntero
 
 	self subclassResponsibility.! !
 
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/19/2018 21:28:43'!
+dividirUnaFraccion: aFraccion
+	self subclassResponsibility.! !
+
 !Numero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
@@ -231,6 +235,10 @@ multiplicarFraccion: aFraccion
 sumarEntero: anEntero
 	"comment stating purpose of message"
  	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/19/2018 21:28:23'!
+sumarFraccion: aFraccion
 	self subclassResponsibility.! !
 
 

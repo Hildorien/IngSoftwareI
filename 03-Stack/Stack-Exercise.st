@@ -139,10 +139,41 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #OOStack category: #'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:09:15'!
+initialize
+stack := OrderedCollection new.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:09:07'!
+isEmpty
+ 	^(stack isEmpty)! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:20:55'!
+pop
+	
+	stack ifNotEmpty:[^stack removeFirst].
+	^self error: self class stackEmptyErrorDescription.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:12:48'!
+push: anElement
+	stack addFirst:anElement
+! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:14:41'!
+size
+ ^stack size! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:24:08'!
+top
+
+
+	stack ifNotEmpty:[ ^stack first].
+	^self error: self class stackEmptyErrorDescription.
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
