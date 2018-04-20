@@ -207,10 +207,31 @@ Object subclass: #Numero
 
 	self subclassResponsibility ! !
 
+!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:47:08'!
+dividirUnEntero: unEntero
+
+	self subclassResponsibility.! !
+
 !Numero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:33:00'!
+multiplicarEntero: anEntero
+ 	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:32:47'!
+multiplicarFraccion: aFraccion
+ 	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:31:31'!
+sumarEntero: anEntero
+	"comment stating purpose of message"
+ 	
+	self subclassResponsibility.! !
 
 
 !Numero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 22:49'!
@@ -294,58 +315,67 @@ initalizeWith: aValue
 	^self error:'La multiplicacion no es entre un entero y una fraccion'."
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:00:08'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:21:40'!
 + anAdder 
 
 	^anAdder sumarEntero:self.
-	
-	
-	
-	"(anAdder isKindOf: Fraccion) ifTrue:[ ^(anAdder denominator + anAdder numerator ) / anAdder denominator].
-	(self isKindOf: self class) ifTrue:[^self class with: value + anAdder integerValue].
-	
-	^self error: 'La suma no es entre entero y fraccion'."
-	
+
 	
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:39:10'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:45:45'!
 / aDivisor 
 	
+	^aDivisor dividirUnEntero: self.
 	
-	
+"
 	(aDivisor isKindOf:Fraccion) ifTrue:[^(self * aDivisor denominator )/ aDivisor numerator ].
 	(self isKindOf: self class) ifTrue:[^Fraccion with: self over: aDivisor].
 	
-	^self error:'La division no es entre un entero y una fraccion'.! !
+	^self error:'La division no es entre un entero y una fraccion'.
+"! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
 // aDivisor 
 	
 	^self class with: value // aDivisor integerValue! !
 
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 21:06:25'!
+dividirUnEntero: aEntero
+
+	^  Fraccion with: aEntero over: self.
+! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:52:02'!
+dividirUnaFraccion: aFraccion
+	"	(aDivisor isKindOf:Entero) ifTrue:[^self numerator / (self denominator * aDivisor)]."
+
+	^ Fraccion with: (aFraccion numerator) over: (self * aFraccion denominator).! !
+
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:00'!
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:06:38'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:22:22'!
 multiplicarEntero: anEntero
+
 	^self class with: value * anEntero integerValue! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:06:25'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:22:16'!
 multiplicarFraccion: aFraction
-	^(self * aFraction numerator)/ aFraction denominator.! !
+
+	^(self * aFraction numerator) / aFraction denominator.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:36:10'!
 sumarEntero: anEntero
 
 	^self class with: value + anEntero integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:37:04'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:22:50'!
 sumarFraccion: aFraccion
 
-		^(aFraccion denominator + aFraccion numerator ) / aFraccion denominator.
+	^(aFraccion denominator + aFraccion numerator ) / aFraccion denominator.
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -433,30 +463,49 @@ hash
 	^self error: 'La suma no es entre fraccion y entero'."
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 16:35:42'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:47:58'!
 / aDivisor 
 	
+	^ aDivisor dividirUnaFraccion: self.	
+	"
 	(aDivisor isKindOf:Entero) ifTrue:[^self numerator / (self denominator * aDivisor)].
 	(self isKindOf:self class) ifTrue:[^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
 	
-	^self error:'La division no es entre una fraccion y un entero'.! !
+	^self error:'La division no es entre una fraccion y un entero'.
+	"! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:09:52'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:52:21'!
+dividirUnEntero: aEntero
+
+	^ Fraccion with: (self denominator * aEntero) over: self numerator . 
+! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 21:14:21'!
+dividirUnaFraccion: aFraccion
+
+	^ Fraccion with: (self denominator * aFraccion numerator) over: (self numerator * aFraccion denominator).! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:19:25'!
 multiplicarEntero: aEntero
+
 	 ^(self numerator * aEntero) / self denominator ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:08:12'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:19:19'!
 multiplicarFraccion: aFraction
+
 	^(numerator * aFraction numerator) / (denominator * aFraction denominator).! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:43:29'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:18:17'!
 sumarEntero: anEntero
- ^(self numerator + self denominator )/self denominator.! !
+ ^  anEntero * self denominator + self numerator / self denominator.
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:40:42'!
+! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:19:11'!
 sumarFraccion: aFraction
  
 	|newNumerator newDenominator|
+	
 	newNumerator := (numerator * aFraction denominator) + (denominator * aFraction numerator).
 	newDenominator := denominator * aFraction denominator.
 	^newNumerator / newDenominator. ! !
