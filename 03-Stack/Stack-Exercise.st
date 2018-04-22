@@ -139,41 +139,43 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #OOStack category: #'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack'
+	instanceVariableNames: 'size topElement previousStack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:09:15'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:13:30'!
 initialize
-stack := OrderedCollection new.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:09:07'!
+	^ EmptyStack new.	
+	
+	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:12:12'!
 isEmpty
- 	^(stack isEmpty)! !
+ 	
+	self subclassResponsibility.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:20:55'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:12:35'!
 pop
 	
-	stack ifNotEmpty:[^stack removeFirst].
-	^self error: self class stackEmptyErrorDescription.! !
+	self subclassResponsibility.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:12:48'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:12:57'!
 push: anElement
-	stack addFirst:anElement
+	
+	self subclassResponsibility.
 ! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:14:41'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:13:11'!
 size
- ^stack size! !
+ 
+	self subclassResponsibility.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'nacho 4/19/2018 19:24:08'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:13:22'!
 top
 
-
-	stack ifNotEmpty:[ ^stack first].
-	^self error: self class stackEmptyErrorDescription.
-	! !
+	self subclassResponsibility.	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -185,3 +187,87 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+
+!classDefinition: #EmptyStack category: #'Stack-Exercise'!
+OOStack subclass: #EmptyStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!EmptyStack methodsFor: 'initialization' stamp: 'AL 4/22/2018 17:26:19'!
+initialize
+
+	^ self! !
+
+
+!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:35:02'!
+isEmpty
+
+	^ true.	! !
+
+!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:47:44'!
+pop
+	
+	^ self stackEmptyErrorDescription.! !
+
+!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:28:22'!
+push: anElement
+
+	^ NotEmptyStack new initializeWithPreviousStack: self withSize: 0 andNewElement: anElement.! !
+
+!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:54:48'!
+size
+	
+	^ 0.! !
+
+!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:55:35'!
+top
+
+	^ self stackEmptyErrorDescription.! !
+
+
+!classDefinition: #NotEmptyStack category: #'Stack-Exercise'!
+OOStack subclass: #NotEmptyStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:33:38'!
+pop
+	
+	^ previousStack! !
+
+!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:07:34'!
+push: anElement
+
+	^ NotEmptyStack initializeWithPreviousStack: self withSize: size andNewElement: anElement.
+
+	! !
+
+!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:02:32'!
+size
+
+	^ size.! !
+
+!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:02:27'!
+top
+
+	^ topElement.! !
+
+
+!NotEmptyStack methodsFor: 'initialization' stamp: 'AL 4/22/2018 17:32:25'!
+initializeWithPreviousStack: aStack withSize: aSize andNewElement: anElement
+
+	size := aSize + 1.
+	previousStack := aStack.
+	topElement := anElement.
+	! !
+
+
+!NotEmptyStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 16:35:16'!
+isEmpty
+	
+	^false! !
