@@ -207,13 +207,13 @@ Object subclass: #Numero
 
 	self subclassResponsibility ! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:47:08'!
-dividirUnEntero: unEntero
-
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:06:26'!
+dividisionDeFraccion: aFraccion
 	self subclassResponsibility.! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/19/2018 21:28:43'!
-dividirUnaFraccion: aFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:06:18'!
+divisionDeEnteros: unEntero
+
 	self subclassResponsibility.! !
 
 !Numero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 22:48'!
@@ -221,24 +221,24 @@ invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:33:00'!
-multiplicarEntero: anEntero
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:06:50'!
+multiplicacionDeEnteros: anEntero
  	
 	self subclassResponsibility.! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:32:47'!
-multiplicarFraccion: aFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:06:59'!
+multiplicacionDeFraccion: aFraccion
  	
 	self subclassResponsibility.! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:31:31'!
-sumarEntero: anEntero
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:07:22'!
+sumaDeEnteros: anEntero
 	"comment stating purpose of message"
  	
 	self subclassResponsibility.! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/19/2018 21:28:23'!
-sumarFraccion: aFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:07:32'!
+sumaDeFraccion: aFraccion
 	self subclassResponsibility.! !
 
 
@@ -311,10 +311,10 @@ initalizeWith: aValue
 	value := aValue! !
 
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:11:07'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:03:29'!
 * aMultiplier 
 	
-	^aMultiplier multiplicarEntero: self.
+	^aMultiplier multiplicacionDeEnteros: self.
 	
 	
 	"(aMultiplier isKindOf:Fraccion) ifTrue:[^(self * aMultiplier numerator)/ aMultiplier denominator ].
@@ -323,18 +323,18 @@ initalizeWith: aValue
 	^self error:'La multiplicacion no es entre un entero y una fraccion'."
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:21:40'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:05:28'!
 + anAdder 
 
-	^anAdder sumarEntero:self.
+	^anAdder sumaDeEnteros:self.
 
 	
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:45:45'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 11:59:59'!
 / aDivisor 
 	
-	^aDivisor dividirUnEntero: self.
+	^aDivisor divisionDeEnteros: self.
 	
 "
 	(aDivisor isKindOf:Fraccion) ifTrue:[^(self * aDivisor denominator )/ aDivisor numerator ].
@@ -348,14 +348,12 @@ initalizeWith: aValue
 	
 	^self class with: value // aDivisor integerValue! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 21:06:25'!
-dividirUnEntero: aEntero
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 11:59:11'!
+divisionDeEnteros: aEntero
+	^Fraccion with: aEntero over: self.! !
 
-	^  Fraccion with: aEntero over: self.
-! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:52:02'!
-dividirUnaFraccion: aFraccion
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 11:59:40'!
+divisionDeFraccion: aFraccion
 	"	(aDivisor isKindOf:Entero) ifTrue:[^self numerator / (self denominator * aDivisor)]."
 
 	^ Fraccion with: (aFraccion numerator) over: (self * aFraccion denominator).! !
@@ -365,23 +363,23 @@ greatestCommonDivisorWith: anEntero
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:22:22'!
-multiplicarEntero: anEntero
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:02:17'!
+multiplicacionDeEnteros: anEntero
 
 	^self class with: value * anEntero integerValue! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:22:16'!
-multiplicarFraccion: aFraction
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:02:25'!
+multiplicacionDeFraccion: aFraction
 
 	^(self * aFraction numerator) / aFraction denominator.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 17:36:10'!
-sumarEntero: anEntero
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:04:44'!
+sumaDeEnteros: anEntero
 
 	^self class with: value + anEntero integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:22:50'!
-sumarFraccion: aFraccion
+!Entero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:04:51'!
+sumaDeFraccion: aFraccion
 
 	^(aFraccion denominator + aFraccion numerator ) / aFraccion denominator.
 ! !
@@ -441,10 +439,10 @@ hash
 	^(numerator hash / denominator hash) hash! !
 
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:11:45'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:03:12'!
 * aMultiplier 
 	
-	^aMultiplier multiplicarFraccion: self.
+	^aMultiplier multiplicacionDeFraccion: self.
 	
 	"(aMultiplier isKindOf: Entero) ifTrue:[^(self numerator * aMultiplier) / self denominator ].
 	(self isKindOf: self class) ifTrue:[^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)].
@@ -452,10 +450,10 @@ hash
 	^self error:'La multiplicacion no es entre una fraccion y un entero'."
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/17/2018 18:00:18'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:05:17'!
 + anAdder 
 
-	^ anAdder sumarFraccion:self.
+	^ anAdder sumaDeFraccion:self.
 	
 	
 	
@@ -471,10 +469,10 @@ hash
 	^self error: 'La suma no es entre fraccion y entero'."
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:47:58'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:00:09'!
 / aDivisor 
 	
-	^ aDivisor dividirUnaFraccion: self.	
+	^ aDivisor divisionDeFraccion: self.	
 	"
 	(aDivisor isKindOf:Entero) ifTrue:[^self numerator / (self denominator * aDivisor)].
 	(self isKindOf:self class) ifTrue:[^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
@@ -482,35 +480,35 @@ hash
 	^self error:'La division no es entre una fraccion y un entero'.
 	"! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:52:21'!
-dividirUnEntero: aEntero
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:01:18'!
+divisionDeEnteros: aEntero
 
 	^ Fraccion with: (self denominator * aEntero) over: self numerator . 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 21:14:21'!
-dividirUnaFraccion: aFraccion
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:01:28'!
+divisionDeFraccion: aFraccion
 
 	^ Fraccion with: (self denominator * aFraccion numerator) over: (self numerator * aFraccion denominator).! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:19:25'!
-multiplicarEntero: aEntero
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:02:49'!
+multiplicacionDeEnteros: aEntero
 
 	 ^(self numerator * aEntero) / self denominator ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:19:19'!
-multiplicarFraccion: aFraction
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:03:00'!
+multiplicacionDeFraccion: aFraction
 
 	^(numerator * aFraction numerator) / (denominator * aFraction denominator).! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:18:17'!
-sumarEntero: anEntero
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:05:04'!
+sumaDeEnteros: anEntero
  ^  anEntero * self denominator + self numerator / self denominator.
 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AL 4/19/2018 20:19:11'!
-sumarFraccion: aFraction
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:05:10'!
+sumaDeFraccion: aFraction
  
 	|newNumerator newDenominator|
 	
