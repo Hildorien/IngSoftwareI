@@ -207,13 +207,13 @@ Object subclass: #Numero
 
 	self subclassResponsibility ! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:06:26'!
-dividisionDeFraccion: aFraccion
-	self subclassResponsibility.! !
-
 !Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/22/2018 12:06:18'!
 divisionDeEnteros: unEntero
 
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'nacho 4/23/2018 16:49:53'!
+divisionDeFraccion: aFraccion
 	self subclassResponsibility.! !
 
 !Numero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 22:48'!
