@@ -137,45 +137,77 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
-Object subclass: #OOStack
-	instanceVariableNames: 'size topElement previousStack'
+!classDefinition: #BaseDePila category: #'Stack-Exercise'!
+Object subclass: #BaseDePila
+	instanceVariableNames: 'valor anterior'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:13:30'!
-initialize
+!BaseDePila methodsFor: 'metodos' stamp: 'nacho 4/25/2018 16:26:55'!
+anterior
+	^self error: OOStack stackEmptyErrorDescription.! !
 
-	^ EmptyStack new.	
+!BaseDePila methodsFor: 'metodos' stamp: 'nacho 4/25/2018 17:19:00'!
+initializeWith: aValue anLastElement: aStackableObject
+	valor := aValue.
+	anterior := self.
+	^self.! !
+
+!BaseDePila methodsFor: 'metodos' stamp: 'nacho 4/22/2018 22:55:10'!
+valor
+	^self error: OOStack stackEmptyErrorDescription.! !
+
+
+!classDefinition: #OOStack category: #'Stack-Exercise'!
+Object subclass: #OOStack
+	instanceVariableNames: 'stack size lastElement'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStack methodsFor: 'metodos' stamp: 'nacho 4/25/2018 17:28:53'!
+initialize
+	stack := BaseDePila new.
+	lastElement := stack.
+	size := 0.
+	^self.
+	
 	
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:12:12'!
+!OOStack methodsFor: 'metodos' stamp: 'nacho 4/22/2018 19:42:08'!
 isEmpty
  	
-	self subclassResponsibility.! !
+	^(size = 0).! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:12:35'!
+!OOStack methodsFor: 'metodos' stamp: 'nacho 4/25/2018 17:01:59'!
 pop
+	|anElement|
+	anElement := lastElement.
+	size := size - 1.
+	lastElement := anElement anterior.
+	^anElement valor.
 	
-	self subclassResponsibility.! !
+	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:12:57'!
+!OOStack methodsFor: 'metodos' stamp: 'nacho 4/25/2018 17:30:06'!
 push: anElement
-	
-	self subclassResponsibility.
-! !
+	| aApliar |
+	aApliar _ StackableObjects new
+		initializeWith: anElement
+		anLastElement: lastElement.
+	lastElement _ aApliar.
+	size _ size + 1.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:13:11'!
+!OOStack methodsFor: 'metodos' stamp: 'nacho 4/22/2018 22:43:22'!
 size
  
-	self subclassResponsibility.! !
+	^size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 17:13:22'!
-top
-
-	self subclassResponsibility.	! !
+!OOStack methodsFor: 'metodos' stamp: 'nacho 4/25/2018 16:33:24'!
+top	
+	^lastElement valor.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -189,85 +221,23 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
-!classDefinition: #EmptyStack category: #'Stack-Exercise'!
-OOStack subclass: #EmptyStack
-	instanceVariableNames: ''
+!classDefinition: #StackableObjects category: #'Stack-Exercise'!
+Object subclass: #StackableObjects
+	instanceVariableNames: 'valor anterior'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!EmptyStack methodsFor: 'initialization' stamp: 'AL 4/22/2018 17:26:19'!
-initialize
+!StackableObjects methodsFor: 'metodos' stamp: 'nacho 4/25/2018 16:26:33'!
+anterior 
+	^anterior.! !
 
-	^ self! !
+!StackableObjects methodsFor: 'metodos' stamp: 'nacho 4/25/2018 17:27:21'!
+initializeWith: aValue anLastElement: aStackableObject
+	valor := aValue.
+	anterior := aStackableObject.
+	^self.! !
 
-
-!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:35:02'!
-isEmpty
-
-	^ true.	! !
-
-!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:47:44'!
-pop
-	
-	^ self stackEmptyErrorDescription.! !
-
-!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:28:22'!
-push: anElement
-
-	^ NotEmptyStack new initializeWithPreviousStack: self withSize: 0 andNewElement: anElement.! !
-
-!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:54:48'!
-size
-	
-	^ 0.! !
-
-!EmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 16:55:35'!
-top
-
-	^ self stackEmptyErrorDescription.! !
-
-
-!classDefinition: #NotEmptyStack category: #'Stack-Exercise'!
-OOStack subclass: #NotEmptyStack
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:33:38'!
-pop
-	
-	^ previousStack! !
-
-!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:07:34'!
-push: anElement
-
-	^ NotEmptyStack initializeWithPreviousStack: self withSize: size andNewElement: anElement.
-
-	! !
-
-!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:02:32'!
-size
-
-	^ size.! !
-
-!NotEmptyStack methodsFor: 'methods' stamp: 'AL 4/22/2018 17:02:27'!
-top
-
-	^ topElement.! !
-
-
-!NotEmptyStack methodsFor: 'initialization' stamp: 'AL 4/22/2018 17:32:25'!
-initializeWithPreviousStack: aStack withSize: aSize andNewElement: anElement
-
-	size := aSize + 1.
-	previousStack := aStack.
-	topElement := anElement.
-	! !
-
-
-!NotEmptyStack methodsFor: 'as yet unclassified' stamp: 'AL 4/22/2018 16:35:16'!
-isEmpty
-	
-	^false! !
+!StackableObjects methodsFor: 'metodos' stamp: 'nacho 4/25/2018 17:31:29'!
+valor
+	^valor.! !
