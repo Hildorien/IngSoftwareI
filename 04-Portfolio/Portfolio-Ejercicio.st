@@ -440,10 +440,21 @@ transactions
 	
 	 ! !
 
-!Portfolio methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:40'!
+!Portfolio methodsFor: 'transactions' stamp: 'nacho 5/8/2018 17:31:34'!
 transactionsOf: anAccount 
-
-	self shouldBeImplemented ! !
+	
+	(self manages:anAccount)
+	ifTrue:
+	[
+		|transactions|
+		transactions _ OrderedCollection new. 
+		^accounts inject: transactions 
+				  		into: [:accountTransactions :aTransaction | accountTransactions 
+															    union: (anAccount transactions)].
+	]
+	
+	ifFalse:[^self error: self class accountNotManagedMessageDescription. ]. 
+! !
 
 
 !Portfolio methodsFor: 'variable inicialization' stamp: 'AL 5/7/2018 21:10:10'!
@@ -460,10 +471,12 @@ initializeWith: anAccount1 with: anAccount2
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'instance creation' stamp: 'AL 5/7/2018 21:03:30'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'nacho 5/8/2018 18:16:11'!
 with: anAccount1 with: anAccount2
-
-	^self new initializeWith: anAccount1 with: anAccount2
+	
+	 ( (anAccount1 manages:anAccount2) | (anAccount2 manages:anAccount1) | (anAccount1 = anAccount2))
+	ifTrue:[^ self error:  self accountAlreadyManagedErrorMessage ]
+	ifFalse:[^self new initializeWith: anAccount1 with: anAccount2].
 ! !
 
 !Portfolio class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:41'!
@@ -472,10 +485,15 @@ withAll: aCollectionOfAccounts
 	self shouldBeImplemented ! !
 
 
-!Portfolio class methodsFor: 'error code' stamp: 'AL 5/7/2018 22:01:21'!
+!Portfolio class methodsFor: 'error code' stamp: 'nacho 5/8/2018 16:53:43'!
+accountAlreadyManagedErrorMessage
+
+ 	^'Invalid portfolio'.! !
+
+!Portfolio class methodsFor: 'error code' stamp: 'nacho 5/8/2018 17:17:09'!
 accountNotManagedMessageDescription
-	
-	^'account Not Managed'.! !
+
+	^'Account not managed'.! !
 
 
 !classDefinition: #ReceptiveAccount category: #'Portfolio-Ejercicio'!
@@ -522,3 +540,14 @@ registers: aTtransaction
 
 	^ transactions includes: aTtransaction 
 ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: #'Portfolio-Ejercicio'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'as yet unclassified' stamp: 'nacho 5/8/2018 17:21:19'!
+accountNotManagedMessageDescription
+
+	^'Account not managed'.! !
