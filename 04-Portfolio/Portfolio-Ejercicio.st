@@ -440,20 +440,14 @@ transactions
 	
 	 ! !
 
-!Portfolio methodsFor: 'transactions' stamp: 'nacho 5/8/2018 17:31:34'!
+!Portfolio methodsFor: 'transactions' stamp: 'nacho 5/9/2018 20:33:23'!
 transactionsOf: anAccount 
-	
+
 	(self manages:anAccount)
 	ifTrue:
-	[
-		|transactions|
-		transactions _ OrderedCollection new. 
-		^accounts inject: transactions 
-				  		into: [:accountTransactions :aTransaction | accountTransactions 
-															    union: (anAccount transactions)].
-	]
-	
-	ifFalse:[^self error: self class accountNotManagedMessageDescription. ]. 
+		[^anAccount transactions .]	
+	ifFalse:
+		[^self error: self class accountNotManagedMessageDescription. ].
 ! !
 
 
@@ -471,12 +465,12 @@ initializeWith: anAccount1 with: anAccount2
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'instance creation' stamp: 'nacho 5/8/2018 18:16:11'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'nacho 5/8/2018 19:14:22'!
 with: anAccount1 with: anAccount2
 	
-	 ( (anAccount1 manages:anAccount2) | (anAccount2 manages:anAccount1) | (anAccount1 = anAccount2))
-	ifTrue:[^ self error:  self accountAlreadyManagedErrorMessage ]
-	ifFalse:[^self new initializeWith: anAccount1 with: anAccount2].
+	 ( (anAccount1 manages:anAccount2) | (anAccount2 manages:anAccount1) | (anAccount1 = anAccount2) )
+		ifTrue:[^ self error:  self accountAlreadyManagedErrorMessage ]
+		ifFalse:[^self new initializeWith: anAccount1 with: anAccount2].
 ! !
 
 !Portfolio class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:41'!
