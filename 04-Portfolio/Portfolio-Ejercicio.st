@@ -422,11 +422,12 @@ manages: anAccount
 	into: [:registers :accountManaged | registers or: (accountManaged manages: anAccount)]).
 ! !
 
-!Portfolio methodsFor: 'testing' stamp: 'AL 5/7/2018 21:25:09'!
-registers: aTtransaction
-
-	^ accounts inject: false 
-				  into: [:registers :anAccount | registers or: (anAccount registers: aTtransaction)]. ! !
+!Portfolio methodsFor: 'testing' stamp: 'AL 5/9/2018 22:06:55'!
+registers: aTransaction
+	^ accounts
+		inject: false
+		into: [ :registers :anAccount |
+			registers or: (anAccount registers: aTransaction) ].! !
 
 
 !Portfolio methodsFor: 'transactions' stamp: 'AL 5/7/2018 21:57:09'!
@@ -440,10 +441,10 @@ transactions
 	
 	 ! !
 
-!Portfolio methodsFor: 'transactions' stamp: 'nacho 5/9/2018 20:33:23'!
+!Portfolio methodsFor: 'transactions' stamp: 'AL 5/9/2018 22:08:12'!
 transactionsOf: anAccount 
 
-	(self manages:anAccount)
+	(self manages: anAccount)
 	ifTrue:
 		[^anAccount transactions .]	
 	ifFalse:
@@ -529,11 +530,9 @@ manages: anAccount
 	^ self = anAccount 
 ! !
 
-!ReceptiveAccount methodsFor: 'testing' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-registers: aTtransaction
-
-	^ transactions includes: aTtransaction 
-! !
+!ReceptiveAccount methodsFor: 'testing' stamp: 'AL 5/9/2018 22:07:40'!
+registers: aTransaction
+	^ transactions includes: aTransaction.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
