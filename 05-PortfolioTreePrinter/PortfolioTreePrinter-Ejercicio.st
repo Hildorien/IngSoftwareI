@@ -637,6 +637,15 @@ withTransfer: aTransfer
 	! !
 
 
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:18:12'!
+modifyBalance: aBalance
+	
+	^transfer value + aBalance.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:20:51'!
+transfer 
+	^transfer.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferDeposit class' category: #'PortfolioTreePrinter-Ejercicio'!
@@ -669,6 +678,17 @@ withTransfer: aTransfer.
 	transfer := aTransfer.
 	
 	! !
+
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:18:25'!
+modifyBalance: aBalance
+	
+	^aBalance - transfer value.
+! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:20:40'!
+transfer 
+	^transfer.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -915,6 +935,30 @@ registers: aTtransaction
 	^ transactions includes: aTtransaction 
 ! !
 
+
+!ReceptiveAccount methodsFor: 'summary' stamp: 'nacho 5/10/2018 21:35:26'!
+accountSummary 
+ 	
+	^transactions.
+	" 
+	|summaryArray|
+	for each transactions as anAccountTransaction do: 
+	
+		if(anAccountTransaction isKindof Deposito)
+			summaryArray.add('Deposito por anAccountTransaction value)
+			
+		if(anAccountTransaction isKindof Withdraw)
+			summaryArray.add('Extraccion  por anAccountTransaction value)
+			
+		if(anAccountTransaction isKindof TransferDeposit)
+			summaryArray.add('Deposito por anAccountTransaction value)
+			
+		if(anAccountTransaction isKindof TransferWithDraw)
+			summaryArray.add('Deposito por anAccountTransaction value)
+		  "
+	
+	! !
+
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #Transfer
@@ -922,6 +966,22 @@ Object subclass: #Transfer
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!Transfer methodsFor: 'interactionsBetweenAccounts' stamp: 'nacho 5/10/2018 21:12:09'!
+from 
+ ^from.! !
+
+!Transfer methodsFor: 'interactionsBetweenAccounts' stamp: 'nacho 5/10/2018 21:12:16'!
+to
+ ^to.! !
+
+!Transfer methodsFor: 'interactionsBetweenAccounts' stamp: 'nacho 5/10/2018 21:12:45'!
+transferDeposit
+ ^transferDeposit .! !
+
+!Transfer methodsFor: 'interactionsBetweenAccounts' stamp: 'nacho 5/10/2018 21:12:30'!
+transferWithdraw 
+ ^transferWithdraw .! !
 
 !Transfer methodsFor: 'interactionsBetweenAccounts' stamp: 'nacho 5/10/2018 19:57:32'!
 value 
