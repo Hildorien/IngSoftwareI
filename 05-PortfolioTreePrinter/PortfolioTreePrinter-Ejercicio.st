@@ -592,6 +592,17 @@ value
 
 	^ value! !
 
+
+!Deposit methodsFor: 'modifyAccount' stamp: 'nacho 5/10/2018 19:35:50'!
+modifyBalance: aBalance
+	
+	^value + aBalance
+! !
+
+!Deposit methodsFor: 'modifyAccount' stamp: 'nacho 5/10/2018 20:00:38'!
+transfer 
+	^value.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: #'PortfolioTreePrinter-Ejercicio'!
@@ -603,15 +614,80 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-!Deposit class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 19:41'!
+!Deposit class methodsFor: 'instance creation' stamp: 'nacho 5/10/2018 19:19:28'!
 register: aValue on: account
 
 	| withdraw |
 	
 	withdraw := self for: aValue.
-	account register: withdraw.
-		
-	^ withdraw! !
+	account register: withdraw.	
+	^ withdraw.! !
+
+
+!classDefinition: #TransferDeposit category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransaction subclass: #TransferDeposit
+	instanceVariableNames: 'transfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferDeposit methodsFor: 'initialization' stamp: 'nacho 5/10/2018 20:51:56'!
+withTransfer: aTransfer
+	transfer := aTransfer.
+	! !
+
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferDeposit class' category: #'PortfolioTreePrinter-Ejercicio'!
+TransferDeposit class
+	instanceVariableNames: ''!
+
+!TransferDeposit class methodsFor: 'class initialization' stamp: 'nacho 5/10/2018 20:54:48'!
+for: aTransfer
+ 	^ self new withTransfer: aTransfer.! !
+
+!TransferDeposit class methodsFor: 'class initialization' stamp: 'nacho 5/10/2018 20:58:47'!
+register: aTransfer on: account
+
+	| transferdeposit |
+	
+	transferdeposit := self for: aTransfer.
+	account register: transferdeposit.	
+	^ transferdeposit.! !
+
+
+!classDefinition: #TransferWithdraw category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransaction subclass: #TransferWithdraw
+	instanceVariableNames: 'transfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'initialization' stamp: 'nacho 5/10/2018 20:52:03'!
+withTransfer: aTransfer.
+	transfer := aTransfer.
+	
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferWithdraw class' category: #'PortfolioTreePrinter-Ejercicio'!
+TransferWithdraw class
+	instanceVariableNames: ''!
+
+!TransferWithdraw class methodsFor: 'class initialization' stamp: 'nacho 5/10/2018 21:00:15'!
+for: aTransfer
+ 	^ self new withTransfer: aTransfer.! !
+
+!TransferWithdraw class methodsFor: 'class initialization' stamp: 'nacho 5/10/2018 21:00:52'!
+register: aTransfer on: account
+
+	| transferwithdraw |
+	
+	transferwithdraw := self for: aTransfer.
+	account register: transferwithdraw.	
+	^ transferwithdraw.! !
 
 
 !classDefinition: #Withdraw category: #'PortfolioTreePrinter-Ejercicio'!
@@ -627,10 +703,17 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/14/2011 05:54'!
+!Withdraw methodsFor: 'value' stamp: 'nacho 5/10/2018 19:21:04'!
 value
 
 	^ value ! !
+
+
+!Withdraw methodsFor: 'modifyAccounts' stamp: 'nacho 5/10/2018 19:48:33'!
+modifyBalance: aBalance
+	
+	^ aBalance - value.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -643,7 +726,7 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-!Withdraw class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/14/2011 05:32'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'nacho 5/10/2018 19:02:25'!
 register: aValue on: account
 
 	| withdraw |
@@ -803,10 +886,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'HAW 9/25/2017 17:06:14'!
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'nacho 5/10/2018 19:45:50'!
 balance
 
-	^ transactions inject: 0 into: [ :balance :transaction | balance + transaction value ]! !
+	^ transactions inject: 0 into: [ :balance :transaction | transaction modifyBalance:balance ]! !
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -835,7 +918,39 @@ registers: aTtransaction
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #Transfer
-	instanceVariableNames: ''
+	instanceVariableNames: 'value from to transferDeposit transferWithdraw'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!Transfer methodsFor: 'interactionsBetweenAccounts' stamp: 'nacho 5/10/2018 19:57:32'!
+value 
+	^value.! !
+
+
+!Transfer methodsFor: 'initialization' stamp: 'nacho 5/10/2018 21:01:47'!
+register: anAmount from: fromAccount to: toAccount.
+	
+	from := fromAccount.
+	to := toAccount.
+	value := anAmount.
+	
+	transferDeposit := TransferDeposit register:self on:toAccount.
+	
+	transferWithdraw := TransferWithdraw register:self on:fromAccount.
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transfer class' category: #'PortfolioTreePrinter-Ejercicio'!
+Transfer class
+	instanceVariableNames: 'value'!
+
+!Transfer class methodsFor: 'intitialization' stamp: 'nacho 5/10/2018 21:06:44'!
+register: anAmount from: fromAccount to: toAccount.
+ ^self new register: anAmount from: fromAccount to: toAccount.! !
+
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 19:57:44'!
+value 
+ ^value.! !
