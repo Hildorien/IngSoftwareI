@@ -506,25 +506,33 @@ test29ReversePortfolioTreePrinterPrintsTheCompositeStartingFromTheLeaves
 	! !
 
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HAW 9/25/2017 21:44:47'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 5/13/2018 17:29:56'!
 accountSummaryLinesOf: aReceptiveAccount 
 	
-	^aReceptiveAccount accountSummary! !
-
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
-accountTransferNetOf: aReceptiveAccount 
+	|accountPrinter|
+	accountPrinter  := AccountPrinter new.
 	
-	self shouldBeImplemented ! !
+	^ accountPrinter accountSummaryOf: aReceptiveAccount .! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 5/13/2018 18:40:21'!
+accountTransferNetOf: aReceptiveAccount
+	| transferNet |
+	transferNet := (TransferNet new) initialize.
+	^ transferNet transferNetOf: aReceptiveAccount.! !
+
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 5/13/2018 20:14:50'!
 investmentEarningsOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	| investmentEarning |
+	investmentEarning := (InvestmentEarnings new) initialize.
+	^ investmentEarning investmentEarningsOf: aReceptiveAccount. ! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 5/13/2018 19:52:09'!
 investmentNetOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	| investmentNet |
+	investmentNet := (InvestmentNet new) initialize.
+	^ investmentNet investmentNetOf: aReceptiveAccount.! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
 portofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
@@ -535,6 +543,24 @@ portofolioTreeOf: aPortfolio namingAccountWith: aDictionary
 reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
 	
 	self shouldBeImplemented ! !
+
+
+!classDefinition: #AccountPrinter category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #AccountPrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!AccountPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:41:52'!
+accountSummaryOf: anAccount
+
+	|summaryArray|
+	summaryArray  := OrderedCollection new.
+	anAccount transactions 
+								do: [ :aTransaction | summaryArray add: (aTransaction printTransaction) ].
+								
+	^summaryArray.! !
 
 
 !classDefinition: #AccountTransaction category: #'PortfolioTreePrinter-Ejercicio'!
@@ -573,6 +599,64 @@ AccountTransaction subclass: #CertificateOfDeposit
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+!CertificateOfDeposit methodsFor: 'initialization' stamp: 'nacho 5/13/2018 19:18:07'!
+register:aValue during:aNumberOfDays at:aTna on: aReceptiveAccount
+	
+	value:= aValue.
+	numberOfDays := aNumberOfDays.
+	tna := aTna .
+	account  := aReceptiveAccount .! !
+
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:11:40'!
+investmentEarning 
+	^value * (tna/360) * numberOfDays ! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:45:08'!
+investmentNet 
+	^value.! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:00:00'!
+modifyBalance: aBalance
+	
+	^aBalance - value.
+! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:18:44'!
+numberOfDays 
+	^numberOfDays .! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:20:32'!
+printTransaction 
+	^'Plazo fijo por ', (value printString) , ' durante ', (numberOfDays printString) , ' dias a una tna de ',   ((100*tna) printString )  ,'%'.! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:18:55'!
+tna 
+	^tna .! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:21:10'!
+transferNet 
+	^0.! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:19:04'!
+value 	
+	^value .! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'CertificateOfDeposit class' category: #'PortfolioTreePrinter-Ejercicio'!
+CertificateOfDeposit class
+	instanceVariableNames: ''!
+
+!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:50:51'!
+register:aValue during:aNumberOfDays at:aTna on: aReceptiveAccount
+	
+	|certificateDeposit|
+	
+	certificateDeposit := self new register: aValue during: aNumberOfDays at: aTna  on: aReceptiveAccount .
+	aReceptiveAccount  register: certificateDeposit .
+	^certificateDeposit .! !
+
 
 !classDefinition: #Deposit category: #'PortfolioTreePrinter-Ejercicio'!
 AccountTransaction subclass: #Deposit
@@ -602,6 +686,25 @@ modifyBalance: aBalance
 !Deposit methodsFor: 'modifyAccount' stamp: 'nacho 5/10/2018 20:00:38'!
 transfer 
 	^value.! !
+
+
+!Deposit methodsFor: 'showValue' stamp: 'nacho 5/13/2018 17:35:22'!
+printTransaction 
+ 
+	^'Deposito por ', (value printString ).! !
+
+!Deposit methodsFor: 'showValue' stamp: 'nacho 5/13/2018 19:06:14'!
+transferNet 
+	^0.! !
+
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:08:55'!
+investmentEarning 
+	^0.! !
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:44:33'!
+investmentNet 
+	^0.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -637,14 +740,33 @@ withTransfer: aTransfer
 	! !
 
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:18:12'!
+
+!TransferDeposit methodsFor: 'nil' stamp: 'nacho 5/10/2018 21:18:12'!
 modifyBalance: aBalance
 	
 	^transfer value + aBalance.! !
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:20:51'!
+!TransferDeposit methodsFor: 'nil' stamp: 'nacho 5/10/2018 21:20:51'!
 transfer 
 	^transfer.! !
+
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:09:18'!
+investmentEarning 
+	^0.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:47:20'!
+investmentNet 
+	^0.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:39:07'!
+printTransaction 
+ 
+	^'Transferencia por ', (transfer value printString ).! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:15:30'!
+transferNet 
+	^transfer value.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -680,15 +802,33 @@ withTransfer: aTransfer.
 	! !
 
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:18:25'!
+!TransferWithdraw methodsFor: 'nil' stamp: 'nacho 5/10/2018 21:18:25'!
 modifyBalance: aBalance
 	
 	^aBalance - transfer value.
 ! !
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 21:20:40'!
+!TransferWithdraw methodsFor: 'nil' stamp: 'nacho 5/10/2018 21:20:40'!
 transfer 
 	^transfer.! !
+
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:09:33'!
+investmentEarning 
+	^0.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:45:49'!
+investmentNet 
+	^0.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:46:26'!
+printTransaction 
+ 
+	^'Transferencia por -', (transfer value printString ).! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:26:20'!
+transferNet 
+	^ -1*transfer value.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -722,6 +862,10 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+!Withdraw methodsFor: 'initialization' stamp: 'nacho 5/13/2018 19:06:23'!
+transferNet 
+	^0.! !
+
 
 !Withdraw methodsFor: 'value' stamp: 'nacho 5/10/2018 19:21:04'!
 value
@@ -734,6 +878,20 @@ modifyBalance: aBalance
 	
 	^ aBalance - value.
 ! !
+
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:09:51'!
+investmentEarning 
+	^0.! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:46:03'!
+investmentNet 
+	^0.! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:35:43'!
+printTransaction 
+ 
+	^'Extraccion por ', (value printString ).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -755,6 +913,63 @@ register: aValue on: account
 	account register: withdraw.
 		
 	^ withdraw! !
+
+
+!classDefinition: #InvestmentEarnings category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #InvestmentEarnings
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!InvestmentEarnings methodsFor: 'initialization' stamp: 'nacho 5/13/2018 20:05:58'!
+initialize 
+	value:= 0.! !
+
+!InvestmentEarnings methodsFor: 'initialization' stamp: 'nacho 5/13/2018 20:05:42'!
+value 
+	^value.! !
+
+
+!InvestmentEarnings methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:14:57'!
+investmentEarningsOf: anAccount 
+		^anAccount transactions 
+								inject: 0 
+								into: [ :investmentValue :transactions | investmentValue + transactions investmentEarning  ].! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InvestmentEarnings class' category: #'PortfolioTreePrinter-Ejercicio'!
+InvestmentEarnings class
+	instanceVariableNames: ''!
+
+!InvestmentEarnings class methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:06:32'!
+initialize 
+	^self new initialize.! !
+
+
+!classDefinition: #InvestmentNet category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #InvestmentNet
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!InvestmentNet methodsFor: 'initialization' stamp: 'nacho 5/13/2018 19:42:07'!
+initialize 
+	value := 0.! !
+
+!InvestmentNet methodsFor: 'initialization' stamp: 'nacho 5/13/2018 19:41:36'!
+value 
+	^value.! !
+
+
+!InvestmentNet methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:47:06'!
+investmentNetOf: anAccount 
+	
+	^anAccount transactions 
+								inject: 0 
+								into: [ :netValue :transactions | netValue + transactions investmentNet  ].! !
 
 
 !classDefinition: #SummarizingAccount category: #'PortfolioTreePrinter-Ejercicio'!
@@ -1000,6 +1215,12 @@ register: anAmount from: fromAccount to: toAccount.
 	transferWithdraw := TransferWithdraw register:self on:fromAccount.
 ! !
 
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:35:32'!
+printTransaction 
+ 
+	^'Transferencia por ', (value printString ).! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Transfer class' category: #'PortfolioTreePrinter-Ejercicio'!
@@ -1011,6 +1232,32 @@ register: anAmount from: fromAccount to: toAccount.
  ^self new register: anAmount from: fromAccount to: toAccount.! !
 
 
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'nacho 5/10/2018 19:57:44'!
+!Transfer class methodsFor: 'nil' stamp: 'nacho 5/10/2018 19:57:44'!
 value 
  ^value.! !
+
+
+!classDefinition: #TransferNet category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #TransferNet
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:40:06'!
+initialize 
+ value:= 0.! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:55:56'!
+transferNetOf: anAccount 
+
+	^anAccount transactions 
+								inject: 0 
+								into: [ :netValue :transactions | netValue + transactions transferNet  ].
+					! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:38:32'!
+value 
+ ^value.! !
+
+InvestmentEarnings initialize!
