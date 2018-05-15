@@ -552,13 +552,44 @@ Object subclass: #AccountPrinter
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!AccountPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:41:52'!
+!AccountPrinter methodsFor: 'print' stamp: 'AL 5/14/2018 18:50:41'!
+printCertificateOfDepositWithAmount: anAmount andDuration: aNumberOfDays withTNA: aPercentage 
+
+	^'Plazo fijo por ', ( anAmount printString) , ' durante ', ( aNumberOfDays printString) , ' dias a una tna de ',   ((100* aPercentage ) printString )  ,'%'.
+
+! !
+
+!AccountPrinter methodsFor: 'print' stamp: 'AL 5/14/2018 18:43:04'!
+printDepositWithAmount: anAmmount
+
+	^'Deposito por ', (anAmmount printString).
+	! !
+
+!AccountPrinter methodsFor: 'print' stamp: 'AL 5/14/2018 18:43:37'!
+printTransferDepositWithAmount: anAmount
+
+	^'Transferencia por ', (anAmount printString).! !
+
+!AccountPrinter methodsFor: 'print' stamp: 'AL 5/14/2018 18:44:13'!
+printTransferWithdrawWithAmount: anAmount
+
+	^'Transferencia por -', (anAmount printString).
+	
+	"	^'Transferencia por -', (((aTransferWithdraw transfer) value) printString )."! !
+
+!AccountPrinter methodsFor: 'print' stamp: 'AL 5/14/2018 18:47:32'!
+printWithdrawWithAmount: anAmount
+
+	^'Extraccion por ', (anAmount printString).! !
+
+
+!AccountPrinter methodsFor: 'as yet unclassified' stamp: 'AL 5/14/2018 18:27:20'!
 accountSummaryOf: anAccount
 
 	|summaryArray|
 	summaryArray  := OrderedCollection new.
 	anAccount transactions 
-								do: [ :aTransaction | summaryArray add: (aTransaction printTransaction) ].
+								do: [ :aTransaction | summaryArray add: (aTransaction printTransaction: self) ].
 								
 	^summaryArray.! !
 
@@ -569,6 +600,13 @@ Object subclass: #AccountTransaction
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+
+!AccountTransaction methodsFor: 'print' stamp: 'AL 5/14/2018 18:30:06'!
+printTransaction: anAccountPrinter
+
+	^self subclassResponsibility. ! !
+
 
 !AccountTransaction methodsFor: 'evaluating' stamp: 'HernanWilkinson 7/14/2011 06:48'!
 value
@@ -626,9 +664,10 @@ modifyBalance: aBalance
 numberOfDays 
 	^numberOfDays .! !
 
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 20:20:32'!
-printTransaction 
-	^'Plazo fijo por ', (value printString) , ' durante ', (numberOfDays printString) , ' dias a una tna de ',   ((100*tna) printString )  ,'%'.! !
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'AL 5/14/2018 18:51:22'!
+printTransaction: anAccountPrinter
+
+	^anAccountPrinter printCertificateOfDepositWithAmount: value andDuration: numberOfDays withTNA: tna.! !
 
 !CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 19:18:55'!
 tna 
@@ -688,10 +727,11 @@ transfer
 	^value.! !
 
 
-!Deposit methodsFor: 'showValue' stamp: 'nacho 5/13/2018 17:35:22'!
-printTransaction 
+!Deposit methodsFor: 'showValue' stamp: 'AL 5/14/2018 18:48:30'!
+printTransaction: anAccountPrinter
  
-	^'Deposito por ', (value printString ).! !
+	^ anAccountPrinter printDepositWithAmount: self value.
+	! !
 
 !Deposit methodsFor: 'showValue' stamp: 'nacho 5/13/2018 19:06:14'!
 transferNet 
@@ -740,7 +780,6 @@ withTransfer: aTransfer
 	! !
 
 
-
 !TransferDeposit methodsFor: 'nil' stamp: 'nacho 5/10/2018 21:18:12'!
 modifyBalance: aBalance
 	
@@ -759,10 +798,11 @@ investmentEarning
 investmentNet 
 	^0.! !
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:39:07'!
-printTransaction 
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'AL 5/14/2018 18:48:55'!
+printTransaction: anAccountPrinter
  
-	^'Transferencia por ', (transfer value printString ).! !
+	^ anAccountPrinter printTransferDepositWithAmount: self transfer value.
+	! !
 
 !TransferDeposit methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:15:30'!
 transferNet 
@@ -821,10 +861,13 @@ investmentEarning
 investmentNet 
 	^0.! !
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:46:26'!
-printTransaction 
- 
-	^'Transferencia por -', (transfer value printString ).! !
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'AL 5/14/2018 18:49:25'!
+printTransaction: anAccountPrinter
+ 	
+
+	^ anAccountPrinter printTransferWithdrawWithAmount: self transfer value.
+
+! !
 
 !TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 18:26:20'!
 transferNet 
@@ -888,10 +931,12 @@ investmentEarning
 investmentNet 
 	^0.! !
 
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'nacho 5/13/2018 17:35:43'!
-printTransaction 
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'AL 5/14/2018 18:49:41'!
+printTransaction: anAccountPrinter
+
+	^ anAccountPrinter printWithdrawWithAmount: self value.
  
-	^'Extraccion por ', (value printString ).! !
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1000,6 +1045,7 @@ transactions
 
 	self subclassResponsibility ! !
 
+
 
 !classDefinition: #Portfolio category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #Portfolio
@@ -1007,6 +1053,7 @@ SummarizingAccount subclass: #Portfolio
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
 
 !Portfolio methodsFor: 'testing' stamp: 'HAW 5/8/2018 16:46:26'!
 anyManagedAccountManages: anAccount 
@@ -1047,6 +1094,15 @@ transactionsOf: anAccount
 	! !
 
 
+!Portfolio methodsFor: 'variable inicialization' stamp: 'AL 5/7/2018 21:10:10'!
+initializeWith: anAccount1 with: anAccount2
+	
+	accounts _ OrderedCollection new.
+	accounts add: anAccount1.
+	accounts add: anAccount2.
+	! !
+
+
 !Portfolio methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 19:19'!
 initializeWithAll: aCollectionOfAccounts
 
@@ -1069,6 +1125,7 @@ withAll: aCollectionOfAccounts
 	self checkCreationPreconditions: aCollectionOfAccounts.
 	
 	^self new initializeWithAll: aCollectionOfAccounts ! !
+
 
 
 !Portfolio class methodsFor: 'assertions' stamp: 'HernanWilkinson 9/18/2011 17:22'!
@@ -1138,6 +1195,7 @@ transactions
 	^ transactions copy! !
 
 
+
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 manages: anAccount
 
@@ -1173,6 +1231,17 @@ accountSummary
 		  "
 	
 	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: #'PortfolioTreePrinter-Ejercicio'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'as yet unclassified' stamp: 'nacho 5/8/2018 17:21:19'!
+accountNotManagedMessageDescription
+
+	^'Account not managed'.! !
 
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
