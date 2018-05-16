@@ -541,10 +541,10 @@ portofolioTreeOf: aPortfolio namingAccountWith: aDictionary
 	portfolioPrinter  := (PortfolioPrinter new) initializeWithPortfolio: aPortfolio andNamigAccountsWith: aDictionary.
 	^portfolioPrinter lines .! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
-reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
+!PortfolioTest methodsFor: 'test support' stamp: 'Nacho 5/16/2018 16:36:09'!
+reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary 	
 	
-	self shouldBeImplemented ! !
+	^(ReversePortfolioPrinter initializeWithPortfolio: aPortfolio andNamigAccountsWith: aDictionary ) lines.! !
 
 
 !classDefinition: #AccountSummary category: #'PortfolioTreePrinter-Ejercicio'!
@@ -1216,10 +1216,10 @@ printPortfolio: aPortfolio
 	
 	aPortfolio printPortfolioAccountsWith: self.! !
 
-!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 23:33:43'!
+!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'Nacho 5/16/2018 16:50:22'!
 printReceptiveAccount: aReceptiveAccount 	
 	
-	((accountNames at:aReceptiveAccount) = (accountNames values) last  )
+	( ((accountNames at:aReceptiveAccount) = (accountNames values) last) | ((accountNames at:aReceptiveAccount) = (accountNames values) first)  )
 	ifTrue:[^lines add:((' '), (accountNames at:aReceptiveAccount)).]
 	ifFalse:[^lines add:(('  '), (accountNames at:aReceptiveAccount)).]
 	! !
@@ -1303,6 +1303,34 @@ ReceptiveAccount class
 accountNotManagedMessageDescription
 
 	^'Account not managed'.! !
+
+
+!classDefinition: #ReversePortfolioPrinter category: #'PortfolioTreePrinter-Ejercicio'!
+SummarizingAccount subclass: #ReversePortfolioPrinter
+	instanceVariableNames: 'portfolio accountNames'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!ReversePortfolioPrinter methodsFor: 'initialization' stamp: 'Nacho 5/16/2018 16:31:22'!
+initializeWithPortfolio: aPortfolio andNamigAccountsWith: aDictionary
+	portfolio  := aPortfolio .
+	accountNames := aDictionary.! !
+
+
+!ReversePortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'Nacho 5/16/2018 16:33:18'!
+lines 
+	^(PortfolioPrinter initializeWithPortfolio: portfolio andNamigAccountsWith:accountNames ) lines reverse.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReversePortfolioPrinter class' category: #'PortfolioTreePrinter-Ejercicio'!
+ReversePortfolioPrinter class
+	instanceVariableNames: ''!
+
+!ReversePortfolioPrinter class methodsFor: 'initialization' stamp: 'Nacho 5/16/2018 16:31:41'!
+initializeWithPortfolio: aPortfolio andNamigAccountsWith: aDictionary
+	^self new initializeWithPortfolio: aPortfolio andNamigAccountsWith: aDictionary.! !
 
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
