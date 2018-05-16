@@ -533,13 +533,13 @@ investmentNetOf: aReceptiveAccount
 	investmentNet := (InvestmentNet new) initialize.
 	^ investmentNet investmentNetOf: aReceptiveAccount.! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'nacho 5/15/2018 20:26:56'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 5/15/2018 22:31:10'!
 portofolioTreeOf: aPortfolio namingAccountWith: aDictionary
 
 	|portfolioPrinter|
 	
 	portfolioPrinter  := (PortfolioPrinter new) initializeWithPortfolio: aPortfolio andNamigAccountsWith: aDictionary.
-	^portfolioPrinter printPortfolio: aPortfolio namingAccountWith: aDictionary.! !
+	^portfolioPrinter lines .! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
 reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
@@ -1124,9 +1124,14 @@ initializeWithAll: aCollectionOfAccounts
 accounts 
 	^accounts ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 20:36:47'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 22:08:10'!
 printAccount: aPortfolioPrinter
 	^aPortfolioPrinter printPortfolio: self.! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 22:07:41'!
+printPortfolioAccountsWith: aPortfolioPrinter
+	
+	accounts do:[:anAccount | anAccount printAccount: aPortfolioPrinter]! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1185,29 +1190,39 @@ accountNotManagedMessageDescription
 
 !classDefinition: #PortfolioPrinter category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #PortfolioPrinter
-	instanceVariableNames: 'portfolio accountNames'
+	instanceVariableNames: 'portfolio accountNames lines'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 20:36:31'!
-printPortfolio: aPortfolio 
-	^ accountNames at: aPortfolio.! !
+!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 22:08:33'!
+lines 
 
-!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 20:42:42'!
-printPortfolio: aPortfolio namingAccountWith: aDictionary
-
-	|portfolioTreePreorder|
+	lines := OrderedCollection new. 
 	
-	portfolioTreePreorder := OrderedCollection new.
-	portfolioTreePreorder add: (aPortfolio printAccount: self).
-	aPortfolio accounts do:[:anAccount | portfolioTreePreorder add:(anAccount printAccount:self)].
-	^portfolioTreePreorder .
-	! !
+	portfolio printAccount: self.
+	
+	^lines.! !
 
-!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 20:37:42'!
-printReceptiveAccount: aReceptiveAccount 
-	^accountNames at:aReceptiveAccount.! !
+!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 23:25:54'!
+printPortfolio: aPortfolio 
+	lines add: ((' '), (accountNames at: aPortfolio)).
+	(lines size = 1) 
+		ifTrue:[
+					|portfolioNameWITHOUTSPACE|					
+					portfolioNameWITHOUTSPACE := (lines first) copyReplaceAll: ' ' with: ''.
+					lines at:1 put: portfolioNameWITHOUTSPACE.
+				].
+	
+	aPortfolio printPortfolioAccountsWith: self.! !
+
+!PortfolioPrinter methodsFor: 'as yet unclassified' stamp: 'nacho 5/15/2018 23:33:43'!
+printReceptiveAccount: aReceptiveAccount 	
+	
+	((accountNames at:aReceptiveAccount) = (accountNames values) last  )
+	ifTrue:[^lines add:((' '), (accountNames at:aReceptiveAccount)).]
+	ifFalse:[^lines add:(('  '), (accountNames at:aReceptiveAccount)).]
+	! !
 
 
 !PortfolioPrinter methodsFor: 'initialization' stamp: 'nacho 5/15/2018 20:25:09'!
