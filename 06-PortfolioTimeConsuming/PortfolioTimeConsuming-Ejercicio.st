@@ -590,16 +590,20 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'HernanWilkinson 7/17/2011 23:58'!
+!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'AL 5/19/2018 17:59:19'!
 lines 
 
-	| lines investmentEarnings |
+	| lines investmentEarnings earnings thread|
 	
 	investmentEarnings := InvestmentNetVisitor for: account.
-	lines := (AccountSummaryWithInvestmentEarnings for: account) lines.
-	lines add: 'Inversiones por ', investmentEarnings value printString.
+	thread _ ThreadExecution newThreadFor:  [(AccountSummaryWithInvestmentEarnings for: account) lines.].
+	earnings _ 'Inversiones por ', investmentEarnings value printString.
 	
-	 ^ lines! !
+	lines _ thread value.
+	lines add: earnings.
+	
+	^lines.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -626,16 +630,20 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'HernanWilkinson 7/17/2011 23:53'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'AL 5/19/2018 17:59:13'!
 lines 
 
-	| lines investmentEarnings |
+	| thread lines investmentEarnings earnings|
 	
 	investmentEarnings := InvestmentEarningVisitor for: account.
-	lines := (AccountSummary for: account) lines.
-	lines add: 'Ganancias por ', investmentEarnings value printString.
+	thread _ ThreadExecution newThreadFor: [(AccountSummary for: account) lines.].
+	earnings _ 'Ganancias por ', investmentEarnings value printString.
 	
-	 ^ lines! !
+	lines _ thread value.	
+	lines add: earnings.
+	 ^ lines
+	
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1602,6 +1610,38 @@ of: aPortfolio namingAccountsWith: aDictionary
 	
 	^ self new initializeOf: aPortfolio namingAccountsWith: aDictionary 
 	! !
+
+
+!classDefinition: #ThreadExecution category: #'PortfolioTimeConsuming-Ejercicio'!
+Object subclass: #ThreadExecution
+	instanceVariableNames: 'semaphore value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTimeConsuming-Ejercicio'!
+
+!ThreadExecution methodsFor: 'as yet unclassified' stamp: 'AL 5/19/2018 17:48:45'!
+initializeNewThread: aBlock
+	
+	semaphore _ Semaphore new.
+	[value _ aBlock value. semaphore signal.] fork.
+! !
+
+!ThreadExecution methodsFor: 'as yet unclassified' stamp: 'AL 5/19/2018 17:49:10'!
+value
+
+	semaphore wait.
+	^value.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ThreadExecution class' category: #'PortfolioTimeConsuming-Ejercicio'!
+ThreadExecution class
+	instanceVariableNames: ''!
+
+!ThreadExecution class methodsFor: 'as yet unclassified' stamp: 'AL 5/19/2018 17:58:54'!
+newThreadFor: aBlock
+	
+	^self new initializeNewThread: aBlock.! !
 
 
 !classDefinition: #Transfer category: #'PortfolioTimeConsuming-Ejercicio'!
