@@ -590,7 +590,7 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'AL 5/19/2018 17:59:19'!
+!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'Nacho 5/22/2018 19:48:49'!
 lines 
 
 	| lines investmentEarnings earnings thread|
@@ -598,7 +598,7 @@ lines
 	investmentEarnings := InvestmentNetVisitor for: account.
 	thread _ ThreadExecution newThreadFor:  [(AccountSummaryWithInvestmentEarnings for: account) lines.].
 	earnings _ 'Inversiones por ', investmentEarnings value printString.
-	
+	thread  wait.
 	lines _ thread value.
 	lines add: earnings.
 	
@@ -630,7 +630,7 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'AL 5/19/2018 17:59:13'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Nacho 5/22/2018 19:48:59'!
 lines 
 
 	| thread lines investmentEarnings earnings|
@@ -638,7 +638,7 @@ lines
 	investmentEarnings := InvestmentEarningVisitor for: account.
 	thread _ ThreadExecution newThreadFor: [(AccountSummary for: account) lines.].
 	earnings _ 'Ganancias por ', investmentEarnings value printString.
-	
+	thread  wait.
 	lines _ thread value.	
 	lines add: earnings.
 	 ^ lines
@@ -1626,11 +1626,13 @@ initializeNewThread: aBlock
 	[value _ aBlock value. semaphore signal.] fork.
 ! !
 
-!ThreadExecution methodsFor: 'as yet unclassified' stamp: 'AL 5/19/2018 17:49:10'!
+!ThreadExecution methodsFor: 'as yet unclassified' stamp: 'Nacho 5/22/2018 19:48:31'!
 value
-
-	semaphore wait.
 	^value.! !
+
+!ThreadExecution methodsFor: 'as yet unclassified' stamp: 'Nacho 5/22/2018 19:48:19'!
+wait 
+	semaphore wait.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
