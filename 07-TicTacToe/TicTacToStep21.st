@@ -12,16 +12,13 @@ test01NewGameMustBeEmpty
 	self assert: game Xs isEmpty.
 	self assert: game Os isEmpty.! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/28/2018 19:27:43'!
-test02FirstTurnIsX
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/30/2018 22:25:48'!
+test01bGivenANewGameFirstPlayMustBeAnX
 	| game |
 	game _ TicTacToe new.
-	game markWithXAt: 1 @ 1.
 	self
-		assert: 1
-		equals: game Xs size.
-	self assert: (game Xs includes: 1 @ 1).
-	self assert: game Os isEmpty.! !
+		assert: game state class
+		equals: XTurn.! !
 
 !TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/28/2018 19:30:32'!
 test03MarksInTableMustBeSaved
