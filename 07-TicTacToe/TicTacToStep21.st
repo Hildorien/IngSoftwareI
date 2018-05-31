@@ -5,22 +5,23 @@ TestCase subclass: #TicTacToeTest
 	poolDictionaries: ''
 	category: 'TicTacToStep21'!
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/28/2018 19:25:00'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:16:40'!
 test01NewGameMustBeEmpty
 	| game |
 	game _ TicTacToe new.
-	self assert: game Xs isEmpty.
-	self assert: game Os isEmpty.! !
+	self assert: game numberOfXPlays = 0.
+	self assert: game numberOfOPlays = 0.! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/30/2018 22:25:48'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:17:17'!
 test01bGivenANewGameFirstPlayMustBeAnX
 	| game |
 	game _ TicTacToe new.
 	self
-		assert: game state class
-		equals: XTurn.! !
+		assert: game isXTurn.
+	self
+		deny: game isOTurn.! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/28/2018 19:30:32'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:18:28'!
 test03MarksInTableMustBeSaved
 	| game |
 	game _ TicTacToe new.
@@ -28,14 +29,14 @@ test03MarksInTableMustBeSaved
 	game markWithOAt: 2 @ 2.
 	self
 		assert: 1
-		equals: game Xs size.
-	self assert: (game Xs includes: 1 @ 1).
+		equals: game numberOfXPlays .
+	self assert: (game isThereAnXIn: 1 @ 1).
 	self
 		assert: 1
-		equals: game Os size.
-	self assert: (game Os includes: 2 @ 2).! !
+		equals: game numberOfOPlays .
+	self assert: (game isThereAnOIn: 2 @ 2).! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/28/2018 19:38:03'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:19:02'!
 test04XShouldNotPlayTwiceInARow
 	| game |
 	game _ TicTacToe new.
@@ -49,11 +50,11 @@ test04XShouldNotPlayTwiceInARow
 				equals: anError messageText.
 			self
 				assert: 1
-				equals: game Xs size.
-			self assert: (game Xs includes: 1 @ 1).
-			self assert: game Os isEmpty ].! !
+				equals: game numberOfXPlays .
+			self assert: (game isThereAnXIn: 1 @ 1).
+			self assert: game numberOfOPlays = 0].! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/28/2018 19:38:19'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:19:39'!
 test05OShouldNotPlayTwiceInARow
 	| game |
 	game _ TicTacToe new.
@@ -68,14 +69,29 @@ test05OShouldNotPlayTwiceInARow
 				equals: anError messageText.
 			self
 				assert: 1
-				equals: game Xs size.
-			self assert: (game Xs includes: 1 @ 1).
+				equals: game numberOfXPlays .
+			self assert: (game isThereAnXIn: 1 @ 1).
 			self
 				assert: 1
-				equals: game Os size.
-			self assert: (game Os includes: 2 @ 2) ].! !
+				equals: game numberOfOPlays .
+			self assert: (game isThereAnOIn: 2 @ 2) ].! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/28/2018 21:28:47'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:30:06'!
+test05b_XPlayerRowPositionShouldBeLessThan3
+	| game |
+	game _ TicTacToe new.
+	self
+		should: [ game markWithXAt: 4 @ 1 ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self
+				assert: TicTacToe playOutOfBoundsMessage 
+				equals: anError messageText.
+			self
+				assert: game numberOfXPlays = 0.
+			].! !
+
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:26:41'!
 test06PlaysShouldBeInDifferentPositions
 	| game |
 	game _ TicTacToe new.
@@ -90,14 +106,14 @@ test06PlaysShouldBeInDifferentPositions
 				equals: anError messageText.
 			self
 				assert: 1
-				equals: game Xs size.
-			self assert: (game Xs includes: 1 @ 1).
+				equals: game numberOfXPlays .
+			self assert: (game isThereAnXIn: 1 @ 1).
 			self
 				assert: 1
-				equals: game Os size.
-			self assert: (game Os includes: 2 @ 2) ].! !
+				equals: game numberOfOPlays .
+			self assert: (game isThereAnOIn: 2 @ 2) ].! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/28/2018 21:35:35'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:27:02'!
 test08XsAndOsPositionsShouldNotOverlap
 	| game |
 	game _ TicTacToe new.
@@ -111,11 +127,11 @@ test08XsAndOsPositionsShouldNotOverlap
 				equals: anError messageText.
 			self
 				assert: 1
-				equals: game Xs size.
-			self assert: (game Xs includes: 1 @ 1).
-			self assert: game Os isEmpty ].! !
+				equals: game numberOfXPlays .
+			self assert: (game isThereAnXIn: 1 @ 1).
+			self assert: game numberOfOPlays = 0].! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/28/2018 21:38:10'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:27:41'!
 test09SamePlayerPositionsShouldNotOverlap
 	| game |
 	game _ TicTacToe new.
@@ -131,13 +147,13 @@ test09SamePlayerPositionsShouldNotOverlap
 				equals: anError messageText.
 			self
 				assert: 2
-				equals: game Xs size.
-			self assert: (game Xs includes: 1 @ 1).
-			self assert: (game Xs includes: 3 @ 3).
+				equals: game numberOfXPlays .
+			self assert: (game isThereAnXIn: 1 @ 1).
+			self assert: (game isThereAnXIn: 3 @ 3).
 			self
 				assert: 1
-				equals: game Os size.
-			self assert: (game Os includes: 2 @ 2) ].! !
+				equals: game numberOfOPlays .
+			self assert: (game isThereAnOIn: 2 @ 2) ].! !
 
 !TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/29/2018 22:35:34'!
 test10NeitherPlayerWinsIfGameNotFinished
@@ -246,7 +262,7 @@ test18APlayerWinsByCompletingThirdColumnAndTheOtherLoses
 	self assert: game XHasWon.
 	self deny: game OHasWon.! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/29/2018 22:56:26'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:28:34'!
 test19OCannotPlayIfXAlreadyWon
 	| game |
 	game _ TicTacToe new.
@@ -264,11 +280,11 @@ test19OCannotPlayIfXAlreadyWon
 				equals: anError messageText.
 			self
 				assert: 2
-				equals: game Os size.
-			self assert: (game Os includes: 2 @ 1).
-			self assert: (game Os includes: 3 @ 1) ].! !
+				equals: game numberOfOPlays .
+			self assert: (game isThereAnOIn: 2 @ 1).
+			self assert: (game isThereAnOIn: 3 @ 1) ].! !
 
-!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/29/2018 22:56:49'!
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:29:00'!
 test20XCannotPlayIfOAlreadyWon
 	| game |
 	game _ TicTacToe new.
@@ -287,10 +303,10 @@ test20XCannotPlayIfOAlreadyWon
 				equals: anError messageText.
 			self
 				assert: 3
-				equals: game Xs size.
-			self assert: (game Xs includes: 2 @ 2).
-			self assert: (game Xs includes: 2 @ 1).
-			self assert: (game Xs includes: 3 @ 1) ].! !
+				equals: game numberOfXPlays .
+			self assert: (game isThereAnXIn: 2 @ 2).
+			self assert: (game isThereAnXIn: 2 @ 1).
+			self assert: (game isThereAnXIn: 3 @ 1) ].! !
 
 !TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'AL 5/29/2018 23:14:08'!
 test21TableIsFullButNeitherPlayerWonThenItsATie
@@ -444,18 +460,20 @@ markWithXAt: aPosition
 					    ifFalse: [ state _ OTurn new].	
 ! !
 
-!TicTacToe methodsFor: 'plays' stamp: 'AL 5/29/2018 23:15:29'!
+!TicTacToe methodsFor: 'plays' stamp: 'AL 5/31/2018 14:25:03'!
 putOAt: aPosition
 	
+	(self isPlayOutOfBounds: aPosition) ifTrue: [self error: self playOutOfBoundsMessage ].	
 	(self isPositionAlreadyTaken: aPosition) ifTrue: [self error: self class positionTakenErrorMessage].	
 	os add: aPosition.
 
 	
 	! !
 
-!TicTacToe methodsFor: 'plays' stamp: 'AL 5/29/2018 23:15:38'!
+!TicTacToe methodsFor: 'plays' stamp: 'AL 5/31/2018 14:34:11'!
 putXAt: aPosition
-	
+
+	(self isPlayOutOfBounds: aPosition) ifTrue: [self error: self class playOutOfBoundsMessage ].	
 	(self isPositionAlreadyTaken: aPosition) ifTrue: [self error: self class positionTakenErrorMessage].	
 	xs add: aPosition.
 
@@ -495,10 +513,28 @@ hasWin: positions
 
 ! !
 
+!TicTacToe methodsFor: 'table state' stamp: 'AL 5/31/2018 14:09:32'!
+isOTurn
+	^ self state class = OTurn. ! !
+
+!TicTacToe methodsFor: 'table state' stamp: 'AL 5/31/2018 14:32:04'!
+isPlayOutOfBounds: aPosition
+	
+	|outsideRowLimits outsideColumnLimits|
+	
+	outsideRowLimits _ aPosition x < 1 or: [aPosition x > 3].
+	outsideColumnLimits _ aPosition  y < 1 or: [aPosition y > 3].
+	
+	^ outsideRowLimits or: [outsideColumnLimits].! !
+
 !TicTacToe methodsFor: 'table state' stamp: 'AL 5/29/2018 23:07:58'!
 isPositionAlreadyTaken: aPosition
 	
 	^ (os includes: aPosition) or: [xs includes: aPosition].! !
+
+!TicTacToe methodsFor: 'table state' stamp: 'AL 5/31/2018 14:09:24'!
+isXTurn
+	^ self state class = XTurn. ! !
 
 !TicTacToe methodsFor: 'table state' stamp: 'AL 5/29/2018 23:18:29'!
 state
@@ -537,7 +573,24 @@ Xs
 
 	^xs copy.! !
 
-!TicTacToe methodsFor: 'as yet unclassified' stamp: 'AL 5/28/2018 21:05:22'!
+!TicTacToe methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:14:07'!
+isThereAnOIn: aPosition
+	^ self Os includes: aPosition.! !
+
+!TicTacToe methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:14:34'!
+isThereAnXIn: aPosition
+	^ self Xs includes: aPosition.! !
+
+!TicTacToe methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:16:14'!
+numberOfOPlays
+	^ self Os size.! !
+
+!TicTacToe methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:16:09'!
+numberOfXPlays
+	^ self Xs size.! !
+
+
+!TicTacToe methodsFor: 'initialization' stamp: 'AL 5/28/2018 21:05:22'!
 initialize
 	
 	xs _ Set new.
@@ -560,6 +613,11 @@ canNotPlayWhenGameIsOverErrorMessage
 notXTurnErrorMessage
 
 	^'Not X turn'! !
+
+!TicTacToe class methodsFor: 'as yet unclassified' stamp: 'AL 5/31/2018 14:20:10'!
+playOutOfBoundsMessage
+	
+	^'Play is out of bounds'! !
 
 !TicTacToe class methodsFor: 'as yet unclassified' stamp: 'jg 5/22/2018 11:20:12'!
 positionTakenErrorMessage
