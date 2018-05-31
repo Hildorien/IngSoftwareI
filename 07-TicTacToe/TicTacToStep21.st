@@ -344,6 +344,34 @@ test21TableIsFullWithAWinningXThenXWonAndOLoses
 	self deny: game OHasWon.
 	self deny: game isTied.! !
 
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/31/2018 15:25:43'!
+test22GameStateChangesAfterXPlayerMarksTheBoard
+	| game |
+	game _ TicTacToe new.
+	game markWithXAt: 1 @ 1.
+	self
+		assert: game isOTurn! !
+
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/31/2018 15:26:49'!
+test23GameStateChangesAfterOPlayerMarksTheBoard
+	| game |
+	game _ TicTacToe new.
+	game markWithXAt: 1 @ 1.
+	game markWithOAt: 2 @ 2.
+	self
+		assert: game isXTurn! !
+
+!TicTacToeTest methodsFor: 'as yet unclassified' stamp: 'Nacho 5/31/2018 15:33:17'!
+test24GameStateChangesAfterAPlayerWinsAndTheOtherLoses
+	| game |
+	game _ TicTacToe new.
+	game markWithXAt: 1 @ 1.
+	game markWithOAt: 2 @ 1.
+	game markWithXAt: 1 @ 2.
+	game markWithOAt: 3 @ 3.
+	game markWithXAt: 1 @ 3.
+	self assert: game isXPlayerTheWinner.! !
+
 
 !classDefinition: #OTurn category: #TicTacToStep21!
 Object subclass: #OTurn
@@ -513,6 +541,10 @@ hasWin: positions
 
 ! !
 
+!TicTacToe methodsFor: 'table state' stamp: 'Nacho 5/31/2018 15:31:02'!
+isOPlayerTheWinner
+	^ self state class = OWon. ! !
+
 !TicTacToe methodsFor: 'table state' stamp: 'AL 5/31/2018 14:09:32'!
 isOTurn
 	^ self state class = OTurn. ! !
@@ -531,6 +563,10 @@ isPlayOutOfBounds: aPosition
 isPositionAlreadyTaken: aPosition
 	
 	^ (os includes: aPosition) or: [xs includes: aPosition].! !
+
+!TicTacToe methodsFor: 'table state' stamp: 'Nacho 5/31/2018 15:30:53'!
+isXPlayerTheWinner
+	^ self state class = XWon. ! !
 
 !TicTacToe methodsFor: 'table state' stamp: 'AL 5/31/2018 14:09:24'!
 isXTurn
