@@ -522,9 +522,42 @@ assertXWon
 ! !
 
 
+!classDefinition: #TicTacToeVistaTests category: #TicTacToe!
+TestCase subclass: #TicTacToeVistaTests
+	instanceVariableNames: 'game'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TicTacToe'!
+
+!TicTacToeVistaTests methodsFor: 'Testing' stamp: 'Nacho 5/31/2018 21:26:32'!
+test00
+	| game vista |
+	game _ TicTacToe new.
+	vista _ TicTacToeVista new initializeWith: game.
+	self assert: vista display isEmpty.
+! !
+
+!TicTacToeVistaTests methodsFor: 'Testing' stamp: 'Nacho 5/31/2018 21:31:42'!
+test01
+	| game vista |
+	game _ TicTacToe new.
+	vista _ TicTacToeVista new initializeWith: game.
+	
+	game markWithXAt: 2@2.
+	
+	self assert: vista display 
+	equals: 
+	' | | 
+	----- 
+	 |X| 
+	----- 
+	 | | '
+! !
+
+
 !classDefinition: #TicTacToe category: #TicTacToe!
 Object subclass: #TicTacToe
-	instanceVariableNames: 'state playerOPositions playerXPositions console'
+	instanceVariableNames: 'state playerOPositions playerXPositions console vista'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TicTacToe'!
@@ -719,6 +752,10 @@ shouldBeTiedWhenNoOneWon
 !TicTacToe methodsFor: 'as yet unclassified' stamp: 'Nacho 5/31/2018 20:47:16'!
 addConsole: aTicTacToeConsole
 	console  := aTicTacToeConsole .! !
+
+!TicTacToe methodsFor: 'as yet unclassified' stamp: 'Nacho 5/31/2018 21:27:53'!
+addVista: aTicTacToeConsole
+	vista  := aTicTacToeConsole .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1052,3 +1089,22 @@ markWithOAt: aPosition
 !PlayingX methodsFor: 'marking board' stamp: 'HAW 10/26/2017 12:30:46'!
 markWithXAt: aPosition
 	game markWithXWhenPlayingXAt: aPosition.! !
+
+
+!classDefinition: #TicTacToeVista category: #TicTacToe!
+Object subclass: #TicTacToeVista
+	instanceVariableNames: 'display game'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TicTacToe'!
+
+!TicTacToeVista methodsFor: 'initialization' stamp: 'Nacho 5/31/2018 21:28:23'!
+initializeWith: aTicTacToe 
+	display := OrderedCollection new.
+	game := aTicTacToe.
+	game addVista: self.! !
+
+
+!TicTacToeVista methodsFor: 'accesing' stamp: 'Nacho 5/31/2018 21:29:15'!
+display 
+	^display .! !
