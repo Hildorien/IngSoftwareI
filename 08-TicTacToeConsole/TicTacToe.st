@@ -39,7 +39,7 @@ test02ConsoleLogsPlayerOMove
 		assert: 'Estado: Jugando X'
 		equals: console showState.! !
 
-!TicTacToeConsoleTest methodsFor: 'as yet unclassified' stamp: 'Nacho 6/3/2018 17:17:51'!
+!TicTacToeConsoleTest methodsFor: 'as yet unclassified' stamp: 'Nacho 6/3/2018 22:00:33'!
 test03ConsoleLogsLastPlay
 	| aTicTacToeGame console |
 	aTicTacToeGame _ self initializeGame .
@@ -47,6 +47,7 @@ test03ConsoleLogsLastPlay
 	aTicTacToeGame markWithXAt: 2 @ 2.
 	aTicTacToeGame markWithOAt: 1 @ 1.
 	aTicTacToeGame markWithXAt: 1@3.
+	console showConsoleLog .
 	self
 		assert: 'X marcó en 1@3'
 		equals: console showLastMark .
@@ -109,6 +110,24 @@ test06ConsoleLogsATieGame
 	self
 		assert: 'Estado: Juego empatado!!'
 		equals: console showState .! !
+
+!TicTacToeConsoleTest methodsFor: 'as yet unclassified' stamp: 'Nacho 6/3/2018 22:10:43'!
+test07ConsoleLogsAllPlays
+	| aTicTacToeGame console |
+	aTicTacToeGame _ self initializeGame.
+	console _ self startConsoleWithGame: aTicTacToeGame.
+	aTicTacToeGame markWithXAt: 2 @ 2.
+	aTicTacToeGame markWithOAt: 1 @ 1.
+	aTicTacToeGame markWithXAt: 1 @ 3.
+	self
+		assert: 'X marcó en 2@2
+		Estado: Jugando O
+		O marcó en 1@1
+		Estado: Jugando X
+		X marcó en 1@3
+		Estado: Jugando O
+		'
+		equals: console showConsoleLog.! !
 
 
 !TicTacToeConsoleTest methodsFor: 'initialize game' stamp: 'Nacho 6/3/2018 17:13:01'!
@@ -942,11 +961,9 @@ playerXMarkedAt: aPosition.
 isConsoleEmpty 
 	^log isEmpty .! !
 
-!TicTacToeConsole methodsFor: 'printing' stamp: 'Nacho 6/3/2018 16:23:21'!
-showConsoleLog
-	| aStream| 
-	aStream := ''.
-	^log do: [: elem | aStream ,  elem , '.
+!TicTacToeConsole methodsFor: 'printing' stamp: 'Nacho 6/3/2018 22:06:58'!
+showConsoleLog	
+	^log inject: '' into:[:aStream :elem | aStream , elem , '
 		']. ! !
 
 !TicTacToeConsole methodsFor: 'printing' stamp: 'Nacho 6/3/2018 15:37:12'!
