@@ -193,22 +193,17 @@ test02aCashierCannotProcessACartWithExpiredCreditCard
 		
 	"tendriamos que asertar que no se hizo ningun pago? si todavia no tenemos un ente que los registre."! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 16:03:15'!
-test03aCashierCanDoACheckoutForGivenPriceListAndCart
-	| aCart aCashier priceList ticket |
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'Nacho 6/9/2018 18:57:37'!
+test03aCashierCanCalculateTotalCorrectly
+	| aCart aCashier aCreditCard ticket |
 	aCart _ self createCart.
-	priceList _ Dictionary new.
-	priceList
-		at: self itemSellByTheStore
-		put: 10 * dollar.
-	aCashier _ Cashier for: priceList.
-	aCart
-		add: 2
-		of: self itemSellByTheStore.
-	ticket _ aCashier checkout: aCart.
+	aCart add: 2 of: self itemSellByTheStore.
+	aCashier _ Cashier for: aCart.
+	aCreditCard _ self createValidCreditCard.
+	ticket _ aCashier checkoutWithCreditCard: aCreditCard.
 	self
 		assert: ticket
-		equals: 20.! !
+		equals: 10.! !
 
 
 !classDefinition: #CreditCardTest category: #TusLibros!
@@ -302,6 +297,10 @@ initializeAcceptingItemsOf: aCatalog
 	items := OrderedCollection new.! !
 
 
+!Cart methodsFor: 'queries' stamp: 'Nacho 6/9/2018 18:46:52'!
+itemsDo: aBlock
+	^items do:aBlock.! !
+
 !Cart methodsFor: 'queries' stamp: 'HernanWilkinson 6/17/2013 17:45'!
 occurrencesOf: anItem
 
@@ -332,6 +331,15 @@ add: aQuantity of: anItem
 
 	1 to: aQuantity do: [ :aNumber | items add: anItem ]! !
 
+
+!Cart methodsFor: 'accesing' stamp: 'Nacho 6/9/2018 18:49:48'!
+catalog 
+	^catalog .! !
+
+!Cart methodsFor: 'accesing' stamp: 'Nacho 6/9/2018 18:49:58'!
+items 
+	^items .! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Cart class' category: #TusLibros!
@@ -351,10 +359,17 @@ Object subclass: #Cashier
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!Cashier methodsFor: 'evaluating' stamp: 'AL 6/9/2018 18:22:54'!
+!Cashier methodsFor: 'evaluating' stamp: 'Nacho 6/9/2018 18:51:46'!
 checkoutWithCreditCard: aCreditCard
  
-	aCreditCard hasExpired ifTrue: [^ Error signal: self expiredCreditCardCheckoutErrorMessage . ].! !
+	|total priceList|
+	
+	aCreditCard hasExpired ifTrue: [^ Error signal: self expiredCreditCardCheckoutErrorMessage . ].
+	total := 0.
+	priceList  := cart catalog.
+	cart itemsDo: [:anItem | total := total + priceList at: anItem].
+	^total.
+	! !
 
 
 !Cashier methodsFor: 'initialization' stamp: 'AL 6/9/2018 17:15:48'!
