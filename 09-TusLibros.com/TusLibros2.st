@@ -125,42 +125,7 @@ TestCase subclass: #CashierTest
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:08:48'!
-createCart
-	
-	^testSetupObjects createCart .! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:08:33'!
-createExpiredCreditCard
-	
-	^testSetupObjects createExpiredCreditCard.! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:08:55'!
-createValidCreditCard
-	
-	^testSetupObjects createValidCreditCard .! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:09:17'!
-defaultCatalog
-	
-	^testSetupObjects defaultCatalog .! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:09:38'!
-itemNotSellByTheStore
-	
-	^testSetupObjects itemNotSellByTheStore .! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:09:50'!
-itemSellByTheStore
-	
-	^testSetupObjects itemSellByTheStore .! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 18:04:22'!
-setUp
-
-	testSetupObjects _ TestSetupObjects new.! !
-
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 17:59:57'!
+!CashierTest methodsFor: 'tests' stamp: 'AL 6/9/2018 17:59:57'!
 test01aCashierCannotProcessAnEmptyCart
 	| emptyCart |
 	
@@ -173,7 +138,7 @@ test01aCashierCannotProcessAnEmptyCart
 			self assert: anError messageText = Cashier emptyCartCashierErrorMessage.
 			].! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 17:26:21'!
+!CashierTest methodsFor: 'tests' stamp: 'AL 6/9/2018 17:26:21'!
 test02aCashierCannotProcessACartWithExpiredCreditCard
 	| aCart aCashier expiredCard |
 	
@@ -193,22 +158,69 @@ test02aCashierCannotProcessACartWithExpiredCreditCard
 		
 	"tendriamos que asertar que no se hizo ningun pago? si todavia no tenemos un ente que los registre."! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'AL 6/9/2018 16:03:15'!
-test03aCashierCanDoACheckoutForGivenPriceListAndCart
-	| aCart aCashier priceList ticket |
+!CashierTest methodsFor: 'tests' stamp: 'AL 6/10/2018 20:42:10'!
+test03aCashierForACartWithOneItemReturnsExpectedTotalAtCheckout
+	| aCart aCashier aCreditCard ticketTotal |
 	aCart _ self createCart.
-	priceList _ Dictionary new.
-	priceList
-		at: self itemSellByTheStore
-		put: 10 * dollar.
-	aCashier _ Cashier for: priceList.
 	aCart
-		add: 2
+		add: 1
 		of: self itemSellByTheStore.
-	ticket _ aCashier checkout: aCart.
+	aCashier _ Cashier for: aCart.
+	aCreditCard _ self createValidCreditCard.
+	ticketTotal _ aCashier checkoutWithCreditCard: aCreditCard.
 	self
-		assert: ticket
-		equals: 20.! !
+		assert: ticketTotal
+		equals: 5.! !
+
+!CashierTest methodsFor: 'tests' stamp: 'AL 6/10/2018 20:42:24'!
+test04aCashierForACartWithMultipleItemsReturnsExpectedTotalAtCheckout
+	| aCart aCashier aCreditCard ticketTotal |
+	aCart _ self createCart.
+	aCart
+		add: 1
+		of: self itemSellByTheStore.
+	aCashier _ Cashier for: aCart.
+	aCreditCard _ self createValidCreditCard.
+	ticketTotal _ aCashier checkoutWithCreditCard: aCreditCard.
+	self
+		assert: ticketTotal
+		equals: 5.! !
+
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:08:48'!
+createCart
+	
+	^testSetupObjects createCart .! !
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:08:33'!
+createExpiredCreditCard
+	
+	^testSetupObjects createExpiredCreditCard.! !
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:08:55'!
+createValidCreditCard
+	
+	^testSetupObjects createValidCreditCard .! !
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:09:17'!
+defaultCatalog
+	
+	^testSetupObjects defaultCatalog .! !
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:09:38'!
+itemNotSellByTheStore
+	
+	^testSetupObjects itemNotSellByTheStore .! !
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:09:50'!
+itemSellByTheStore
+	
+	^testSetupObjects itemSellByTheStore .! !
+
+!CashierTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:04:22'!
+setUp
+
+	testSetupObjects _ TestSetupObjects new.! !
 
 
 !classDefinition: #CreditCardTest category: #TusLibros!
@@ -218,31 +230,31 @@ TestCase subclass: #CreditCardTest
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!CreditCardTest methodsFor: 'setup' stamp: 'AL 6/9/2018 18:06:42'!
+!CreditCardTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:06:42'!
 createExpiredCreditCard
 	
 	^ testSetupObjects createExpiredCreditCard .
 ! !
 
-!CreditCardTest methodsFor: 'setup' stamp: 'AL 6/9/2018 18:07:05'!
+!CreditCardTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:07:05'!
 createInvalidNumberCreditCard
 	
 	^ testSetupObjects createInvalidNumberCreditCard .
 ! !
 
-!CreditCardTest methodsFor: 'setup' stamp: 'AL 6/9/2018 18:07:18'!
+!CreditCardTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:07:18'!
 createValidCreditCard
 		
 	^ testSetupObjects createValidCreditCard .
 ! !
 
-!CreditCardTest methodsFor: 'setup' stamp: 'AL 6/9/2018 18:04:12'!
+!CreditCardTest methodsFor: 'support' stamp: 'AL 6/9/2018 18:04:12'!
 setUp
 
 	testSetupObjects _ TestSetupObjects new.! !
 
 
-!CreditCardTest methodsFor: 'testing' stamp: 'AL 6/9/2018 17:38:29'!
+!CreditCardTest methodsFor: 'tests' stamp: 'AL 6/9/2018 17:38:29'!
 test01numberHasToBe16DigitsLong
 
 	self
@@ -250,17 +262,14 @@ test01numberHasToBe16DigitsLong
 		raise: Error
 		withExceptionDo: [ :Error | self assert: Error messageText = CreditCard invalidNumberErrorMessage]! !
 
-!CreditCardTest methodsFor: 'testing' stamp: 'AL 6/9/2018 17:40:45'!
-test02givenCreditCardWithExpiredDateHasExpired
-
+!CreditCardTest methodsFor: 'tests' stamp: 'AL 6/10/2018 20:37:55'!
+test03givenCreditCardWithExpiredDateHasExpired
 	| card |
-	
-	card _ self createExpiredCreditCard. 
-	
-	self assert: card hasExpired.	! !
+	card _ self createExpiredCreditCard.
+	self assert: card hasExpired.! !
 
-!CreditCardTest methodsFor: 'testing' stamp: 'AL 6/9/2018 17:40:57'!
-test03givenCreditCardWithNotExpiredDateHasNotExpired
+!CreditCardTest methodsFor: 'tests' stamp: 'AL 6/10/2018 20:38:06'!
+test04givenCreditCardWithNotExpiredDateHasNotExpired
 	| card |
 	card _ self createValidCreditCard.
 	self deny: card hasExpired.! !
@@ -302,6 +311,10 @@ initializeAcceptingItemsOf: aCatalog
 	items := OrderedCollection new.! !
 
 
+!Cart methodsFor: 'queries' stamp: 'Nacho 6/9/2018 18:46:52'!
+itemsDo: aBlock
+	^items do:aBlock.! !
+
 !Cart methodsFor: 'queries' stamp: 'HernanWilkinson 6/17/2013 17:45'!
 occurrencesOf: anItem
 
@@ -332,6 +345,15 @@ add: aQuantity of: anItem
 
 	1 to: aQuantity do: [ :aNumber | items add: anItem ]! !
 
+
+!Cart methodsFor: 'accesing' stamp: 'Nacho 6/9/2018 18:49:48'!
+catalog 
+	^catalog .! !
+
+!Cart methodsFor: 'accesing' stamp: 'Nacho 6/9/2018 18:49:58'!
+items 
+	^items .! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Cart class' category: #TusLibros!
@@ -351,10 +373,17 @@ Object subclass: #Cashier
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!Cashier methodsFor: 'evaluating' stamp: 'AL 6/9/2018 18:22:54'!
+!Cashier methodsFor: 'evaluating' stamp: 'Nacho 6/9/2018 18:51:46'!
 checkoutWithCreditCard: aCreditCard
  
-	aCreditCard hasExpired ifTrue: [^ Error signal: self expiredCreditCardCheckoutErrorMessage . ].! !
+	|total priceList|
+	
+	aCreditCard hasExpired ifTrue: [^ Error signal: self expiredCreditCardCheckoutErrorMessage . ].
+	total := 0.
+	priceList  := cart catalog.
+	cart itemsDo: [:anItem | total := total + priceList at: anItem].
+	^total.
+	! !
 
 
 !Cashier methodsFor: 'initialization' stamp: 'AL 6/9/2018 17:15:48'!
