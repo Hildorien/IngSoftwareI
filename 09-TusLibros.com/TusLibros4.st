@@ -296,6 +296,88 @@ test03TusLibrosSystemDoesNotRaiseErrorsOnValidCredentials
 				andPassword: password ]
 		raise: Error.! !
 
+!TusLibrosSystemTest methodsFor: 'Testing' stamp: 'Nacho 6/16/2018 14:49:23'!
+test04TusLibrosSystemCanAddItemsToCreatedCart
+	| tusLibrosSystem username password cartId |
+	tusLibrosSystem _ testObjectsFactory newTusLibrosSystem.
+	username _ testObjectsFactory aValidUser.
+	password _ testObjectsFactory aValidPassword.
+	cartId  := tusLibrosSystem createCartWithUser: username andPassword: password.
+	self
+		shouldnt: [ tusLibrosSystem addToCart: cartId aQuantity: 1 ofBook: self aValidBook .
+			 ]
+		raise: Error.! !
+
+!TusLibrosSystemTest methodsFor: 'Testing' stamp: 'Nacho 6/16/2018 14:50:10'!
+test05TusLibrosSystemCannotAddItemsToNotCreatedCart
+	| tusLibrosSystem cartId |
+	tusLibrosSystem _ testObjectsFactory newTusLibrosSystem.
+	cartId := tusLibrosSystem newCartId .
+	self
+		should: [ tusLibrosSystem addToCart: cartId aQuantity: 1 ofBook: self aValidBook .
+			 ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText  = tusLibrosSystem cartIdIsNotRegisteredErrorMessage ]! !
+
+!TusLibrosSystemTest methodsFor: 'Testing' stamp: 'Nacho 6/16/2018 14:49:47'!
+test06TusLibrosSystemCannotAddItemsNotSoldByStore
+	| tusLibrosSystem username password cartId |
+	tusLibrosSystem _ testObjectsFactory newTusLibrosSystem.
+	username _ testObjectsFactory aValidUser.
+	password _ testObjectsFactory aValidPassword.
+	cartId  := tusLibrosSystem createCartWithUser: username andPassword: password.
+	self
+		should: [ tusLibrosSystem addToCart: cartId aQuantity: 1 ofBook: self aInvalidBook .
+			 ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText  = tusLibrosSystem itemOutOfCatalogErrorMessage]! !
+
+!TusLibrosSystemTest methodsFor: 'Testing' stamp: 'Nacho 6/16/2018 14:37:22'!
+test07TusLibrosSystemCannotListCartOfInvalidCart
+	| tusLibrosSystem cartId |
+	tusLibrosSystem _ testObjectsFactory newTusLibrosSystem.
+	cartId := tusLibrosSystem newCartId .
+	self
+		should: [ tusLibrosSystem listCart: cartId.
+			 ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText  = tusLibrosSystem cartIdIsNotRegisteredErrorMessage ]! !
+
+!TusLibrosSystemTest methodsFor: 'Testing' stamp: 'Nacho 6/16/2018 14:42:46'!
+test08TusLibrosSystemListCartOfEmptyCartReturnsEmptyItems
+| tusLibrosSystem username password cartId items|
+	tusLibrosSystem _ testObjectsFactory newTusLibrosSystem.
+	username _ testObjectsFactory aValidUser.
+	password _ testObjectsFactory aValidPassword.
+	cartId  := tusLibrosSystem createCartWithUser: username andPassword: password.
+	items := tusLibrosSystem listCart: cartId .
+	
+	self assert: items isEmpty .! !
+
+!TusLibrosSystemTest methodsFor: 'Testing' stamp: 'Nacho 6/16/2018 14:50:33'!
+test09TusLibrosSystemListCartReturnsItemsCorrectly
+| tusLibrosSystem username password cartId items|
+	tusLibrosSystem _ testObjectsFactory newTusLibrosSystem.
+	username _ testObjectsFactory aValidUser.
+	password _ testObjectsFactory aValidPassword.
+	cartId  := tusLibrosSystem createCartWithUser: username andPassword: password.
+	tusLibrosSystem addToCart: cartId aQuantity: 2 ofBook: self aValidBook .
+	items := tusLibrosSystem listCart: cartId .
+		
+	self assert: (items occurrencesOf: testObjectsFactory itemSellByTheStore ) = 2. 
+	! !
+
+
+!TusLibrosSystemTest methodsFor: 'setup' stamp: 'Nacho 6/16/2018 14:49:04'!
+aInvalidBook  
+  ^testObjectsFactory itemNotSellByTheStore .! !
+
+!TusLibrosSystemTest methodsFor: 'setup' stamp: 'Nacho 6/16/2018 14:48:51'!
+aValidBook  
+  ^testObjectsFactory itemSellByTheStore .! !
 
 !TusLibrosSystemTest methodsFor: 'setup' stamp: 'Nacho 6/14/2018 21:09:03'!
 setUp 
@@ -338,6 +420,10 @@ initializeAcceptingItemsOf: aCatalog
 	catalog := aCatalog.
 	items := OrderedCollection new.! !
 
+
+!Cart methodsFor: 'queries' stamp: 'Nacho 6/16/2018 14:32:38'!
+getContents 
+	^items copy.! !
 
 !Cart methodsFor: 'queries' stamp: 'HernanWilkinson 6/17/2013 17:45'!
 occurrencesOf: anItem
@@ -604,9 +690,10 @@ defaultDatabase
 		at: self aValidUser put: self aValidPassword;
 		yourself ! !
 
-!StoreTestObjectsFactory methodsFor: 'tusLibros system' stamp: 'Nacho 6/14/2018 20:50:32'!
+!StoreTestObjectsFactory methodsFor: 'tusLibros system' stamp: 'Nacho 6/16/2018 13:47:52'!
 newTusLibrosSystem 
-	^TusLibrosSystem newSystemWithDatabase: self defaultDatabase .! !
+	^TusLibrosSystem newSystemWithDatabase: self defaultDatabase andCatalog: self defaultCatalog.
+	! !
 
 
 !StoreTestObjectsFactory methodsFor: 'user' stamp: 'Nacho 6/14/2018 20:49:50'!
@@ -628,29 +715,56 @@ anInvalidUser
 
 !classDefinition: #TusLibrosSystem category: #TusLibros!
 Object subclass: #TusLibrosSystem
-	instanceVariableNames: 'database carts'
+	instanceVariableNames: 'database catalog carts lastCartId'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!TusLibrosSystem methodsFor: 'cart creation' stamp: 'Nacho 6/14/2018 21:33:02'!
+!TusLibrosSystem methodsFor: 'cart creation' stamp: 'Nacho 6/16/2018 13:52:08'!
+addNewCartSessionWithId: aCartId andCart: aCart. 
+	carts at:aCartId put: aCart.! !
+
+!TusLibrosSystem methodsFor: 'cart creation' stamp: 'Nacho 6/16/2018 14:08:49'!
 createCartWithUser: aUsername andPassword: aPassword 
-	
-	|newCart|
+	|aCartId |
 	self assertIsValidUsername: aUsername andPassword: aPassword.
-	newCart := Cart new.! !
+	aCartId  := self newCartId.
+	self addNewCartSessionWithId:  aCartId andCart: (Cart acceptingItemsOf: catalog) .
+	^aCartId.! !
+
+!TusLibrosSystem methodsFor: 'cart creation' stamp: 'Nacho 6/16/2018 13:42:27'!
+newCartId 
+	lastCartId  := lastCartId  +1.
+	^lastCartId .! !
 
 
-!TusLibrosSystem methodsFor: 'initialization' stamp: 'Nacho 6/14/2018 21:20:31'!
+!TusLibrosSystem methodsFor: 'initialization' stamp: 'Nacho 6/16/2018 13:41:14'!
 initializeNewSystemWithDatabase: aDatabase  
 	database := aDatabase.
+	lastCartId  := 0.
 	carts := Dictionary new.! !
 
+!TusLibrosSystem methodsFor: 'initialization' stamp: 'Nacho 6/16/2018 13:46:04'!
+initializeNewSystemWithDatabase: aDatabase andCatalog: aCatalog  
+	database := aDatabase.
+	catalog := aCatalog .
+	lastCartId  := 0.
+	carts := Dictionary new.! !
+
+
+!TusLibrosSystem methodsFor: 'accessing' stamp: 'Nacho 6/16/2018 14:29:09'!
+cartOf: cartId 
+	^carts at: cartId .! !
 
 !TusLibrosSystem methodsFor: 'accessing' stamp: 'Nacho 6/14/2018 20:54:01'!
 carts 
  ^carts .! !
 
+
+!TusLibrosSystem methodsFor: 'assertions' stamp: 'Nacho 6/16/2018 14:15:08'!
+assertCartIsRegisteredWith: aCartId
+	self.
+	(carts includesKey: aCartId) ifFalse: [ self error: self cartIdIsNotRegisteredErrorMessage ].! !
 
 !TusLibrosSystem methodsFor: 'assertions' stamp: 'Nacho 6/14/2018 21:04:16'!
 assertIsValidUsername: aUsername andPassword: aPassword. 
@@ -664,13 +778,47 @@ assertIsValidUsername: aUsername andPassword: aPassword.
 ! !
 
 
+!TusLibrosSystem methodsFor: 'error messages' stamp: 'Nacho 6/16/2018 14:15:08'!
+cartIdIsNotRegisteredErrorMessage
+	^ 'cart id is not registered'.! !
+
 !TusLibrosSystem methodsFor: 'error messages' stamp: 'Nacho 6/14/2018 21:04:56'!
 invalidPasswordErrorMessage 
 	^ 'Invalid password'.! !
 
+!TusLibrosSystem methodsFor: 'error messages' stamp: 'Nacho 6/16/2018 14:22:33'!
+itemOutOfCatalogErrorMessage 
+	^ (Cart new) invalidItemErrorMessage.! !
+
 !TusLibrosSystem methodsFor: 'error messages' stamp: 'Nacho 6/14/2018 21:05:35'!
 usernameDoesNotExistErrorMessage 
 	^'username does not exist'.! !
+
+
+!TusLibrosSystem methodsFor: 'cart modification' stamp: 'Nacho 6/16/2018 14:29:27'!
+addToCart: cartId aQuantity: anAmount ofBook: aBook 
+	| aCart |
+	self assertCartIsRegisteredWith: cartId . 
+	aCart  := self cartOf: cartId .
+	aCart add: anAmount of: aBook.
+	
+	! !
+
+
+!TusLibrosSystem methodsFor: 'cart accesing' stamp: 'Nacho 6/16/2018 15:40:33'!
+checkOutCart: cartId withCreditCard: aCreditNumber andExpirationCardDate: aExpirationDate andOwner: anOwnerName
+ 	|aCart|	
+	self assertCartIsRegisteredWith: cartId .
+	aCart  := self cartOf: cartId. 
+	"Reimplementar el Cashier checkout con nuevos parametros".
+	^0.! !
+
+!TusLibrosSystem methodsFor: 'cart accesing' stamp: 'Nacho 6/16/2018 14:33:18'!
+listCart: cartId
+ 	|aCart|	
+	self assertCartIsRegisteredWith: cartId .
+	aCart  := self cartOf: cartId. 
+	^ aCart getContents .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -681,3 +829,7 @@ TusLibrosSystem class
 !TusLibrosSystem class methodsFor: 'initialization' stamp: 'Nacho 6/14/2018 20:41:23'!
 newSystemWithDatabase: aDatabase 
 	^self new initializeNewSystemWithDatabase: aDatabase.! !
+
+!TusLibrosSystem class methodsFor: 'initialization' stamp: 'Nacho 6/16/2018 13:46:30'!
+newSystemWithDatabase: aDatabase andCatalog: aCatalog 
+	^self new initializeNewSystemWithDatabase: aDatabase andCatalog: aCatalog.! !
