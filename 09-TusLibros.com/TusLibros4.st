@@ -125,7 +125,7 @@ test01CanNotCheckoutAnEmptyCart
 			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage.
 			self assert: salesBook isEmpty ] ! !
 
-!CashierTest methodsFor: 'tests' stamp: 'Nacho 6/17/2018 21:49:33'!
+!CashierTest methodsFor: 'tests' stamp: 'Nacho 6/18/2018 16:08:30'!
 test02CalculatedTotalIsCorrect
 
 	| cart cashier |
@@ -726,6 +726,17 @@ debitTotal
 	merchantProcessor debit: total from: creditCard.
 	! !
 
+!Cashier methodsFor: 'checkout - private' stamp: 'Nacho 6/18/2018 16:14:04'!
+getUserSales 
+	(self isCalledFromSystem)
+		ifTrue: [^salesBook at: username]
+		ifFalse:[^salesBook].! !
+
+!Cashier methodsFor: 'checkout - private' stamp: 'Nacho 6/18/2018 16:15:34'!
+isCalledFromSystem 
+	^(salesBook isKindOf: Dictionary ).
+	! !
+
 !Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:06'!
 registerSale
 
@@ -737,11 +748,11 @@ registerSaleOn: aUserSales
 	aUserSales add: self createSale .! !
 
 
-!Cashier methodsFor: 'checkout' stamp: 'imf 6/17/2018 17:14:50'!
+!Cashier methodsFor: 'checkout' stamp: 'Nacho 6/18/2018 16:13:03'!
 checkOut
 	|userSales|
 	
-	userSales  _ salesBook at: username .
+	userSales _ self getUserSales.
 	
 	self calculateTotal.
 	self debitTotal.
@@ -985,7 +996,7 @@ addNewCartWithId: aCartId andCart: aCart
 		at: aCartId
 		put: aCart.! !
 
-!TusLibrosSystem methodsFor: 'cart initialization' stamp: 'Nacho 6/17/2018 20:18:03'!
+!TusLibrosSystem methodsFor: 'cart initialization' stamp: 'Nacho 6/18/2018 16:01:33'!
 createCartWithUser: aUsername andPassword: aPassword
 	| aCartId |
 	self
@@ -997,9 +1008,8 @@ createCartWithUser: aUsername andPassword: aPassword
 		andCart: (Cart acceptingItemsOf: catalog).
 	self
 		registerCartId: aCartId
-		for: aUsername.  
-	self registerCartIdSessionTime: aCartId.	
-	
+		for: aUsername.
+	self registerFirstCartIdSessionTime: aCartId.
 	^ aCartId.! !
 
 !TusLibrosSystem methodsFor: 'cart initialization' stamp: 'Nacho 6/16/2018 13:42:27'!
@@ -1016,16 +1026,16 @@ initializeSalesBookWith: aUsernameList
 	aUsernameList do:[ :aUsername | aSalesBook at: aUsername put: ( OrderedCollection new)].
 	^ aSalesBook.! !
 
-!TusLibrosSystem methodsFor: 'initialization' stamp: 'Nacho 6/17/2018 20:15:20'!
+!TusLibrosSystem methodsFor: 'initialization' stamp: 'Nacho 6/18/2018 16:01:04'!
 initializeWithUsers: aRegisterList Catalog: aCatalog MerchantProcessor: aMerchantProcessor SalesBook: aSalesBook.
-	registerUsers _ aRegisterList .
+	registerUsers _ aRegisterList .      "La lista de usuarios registrados"
 	catalog _ aCatalog.
 	merchantProcessor _ aMerchantProcessor .
 	salesBook  _ (self initializeSalesBookWith: (aRegisterList keys)).
 	lastCartId _ 0.
-	carts _ Dictionary new.
-	usersId  _ Dictionary new.  
-	cartSessions  _ Dictionary new.! !
+	carts _ Dictionary new.     "Un diccionario donde se guarda idCarrito -> carrito"
+	usersId  _ Dictionary new.  "Un diccionario donde se guarda idCarrito -> usuario . Notar que un usuario puede tener varios carritos por lo que puede aparecer en mas de un significado. El usuario es unico"
+	cartSessions  _ Dictionary new.  "Un diccionario donde se guarda el idCarrito ->tiempo de sesion".! !
 
 !TusLibrosSystem methodsFor: 'initialization' stamp: 'Nacho 6/17/2018 19:12:42'!
 registerCartId: aCartId for: aUsername.
@@ -1089,9 +1099,9 @@ assertIsValidUsername: aUsername andPassword: aPassword
 			(registerUsers at: aUsername) = aPassword ifFalse: [ self error: self invalidPasswordErrorMessage ]]
 		ifFalse: [ self error: self usernameDoesNotExistErrorMessage ].! !
 
-!TusLibrosSystem methodsFor: 'assertions' stamp: 'Nacho 6/17/2018 21:20:44'!
+!TusLibrosSystem methodsFor: 'assertions' stamp: 'Nacho 6/18/2018 15:45:36'!
 assertSessionHasNotExpiresOn: cartId 
-	(  (cartSessions at: cartId) <= self sessionDuration ) ifFalse: [ ^self error: self sessionExpiredMessageError .]! !
+	(  self isSessionExpired: cartId ) ifTrue: [ ^self error: self sessionExpiredMessageError .]! !
 
 
 !TusLibrosSystem methodsFor: 'error messages' stamp: 'Nacho 6/16/2018 14:15:08'!
@@ -1166,15 +1176,32 @@ listPurchasesWithClient: aUsername andPassword: aPassword
 	^ itemsPurchased.! !
 
 
-!TusLibrosSystem methodsFor: 'session duration' stamp: 'Nacho 6/17/2018 21:21:12'!
+!TusLibrosSystem methodsFor: 'session duration' stamp: 'Nacho 6/18/2018 15:58:03'!
 expireTimeOf: aCartId    
-	| sessionTime| 
-	sessionTime  _ (cartSessions at: aCartId).  
-  	cartSessions at: aCartId put: ( sessionTime + (self sessionDuration ) + 1 minutes).! !
+	| firstSessionTime expireSessionDuration logTime logSessions| 
+	firstSessionTime  _ (cartSessions at: aCartId) first.  
+	expireSessionDuration  _ Duration days: 0 hours: 0 minutes:31  seconds:0. .
+	logTime _  firstSessionTime + expireSessionDuration .
+	logSessions _ (cartSessions at: aCartId ).
+	logSessions add:logTime .
+  	cartSessions at: aCartId put: logSessions .! !
 
-!TusLibrosSystem methodsFor: 'session duration' stamp: 'Nacho 6/17/2018 21:20:14'!
-registerCartIdSessionTime: cartId 
- 	cartSessions at: cartId  put: 0 minutes.! !
+!TusLibrosSystem methodsFor: 'session duration' stamp: 'Nacho 6/18/2018 15:45:02'!
+isSessionExpired: cartId  
+	|cartSessionDuration|
+	
+	cartSessionDuration _ (( cartSessions at:cartId ) last) - ((cartSessions at:cartId) first). 
+	(cartSessionDuration <= 30 minutes) ifTrue:[ ^false.]
+											   ifFalse:[ ^true.]	 ! !
+
+!TusLibrosSystem methodsFor: 'session duration' stamp: 'Nacho 6/18/2018 16:01:33'!
+registerFirstCartIdSessionTime: cartId
+	| logTimes |
+	logTimes _ OrderedCollection new.
+	logTimes add: DateAndTime now.
+	cartSessions
+		at: cartId
+		put: logTimes.! !
 
 !TusLibrosSystem methodsFor: 'session duration' stamp: 'Nacho 6/17/2018 19:55:48'!
 sessionDuration 
